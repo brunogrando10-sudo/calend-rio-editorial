@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Marvee — Métricas</title>
+<link href="https://fonts.googleapis.com/css2?family=Palanquin:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root {
+  --teal: #5BC0BE; --teal-light: rgba(91,192,190,0.12); --teal-mid: rgba(91,192,190,0.25);
+  --navy: #0B132B; --independence: #3A506B;
+  --bg: #F4F6F9; --surface: #FFFFFF; --border: #E2E8F0;
+  --text: #0B132B; --text-muted: #7A90A8; --text-light: #B0C0D0;
+  --green: #22C55E; --red: #EF4444; --amber: #F59E0B;
+  --ig: #E1306C; --li: #0077B5; --yt: #FF0000; --kit: #5BC0BE;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Palanquin',Arial,sans-serif; background:var(--bg); color:var(--text); font-size:14px; min-height:100vh; }
+
+/* NAV */
+nav { background:var(--navy); height:56px; display:flex; align-items:center; justify-content:space-between; padding:0 28px; position:sticky; top:0; z-index:100; box-shadow:0 2px 12px rgba(11,19,43,0.18); }
+.nav-logo { display:flex; align-items:center; gap:10px; cursor:pointer; }
+.nav-logo img { height:28px; width:auto; }
+.nav-tabs { display:flex; background:rgba(255,255,255,0.08); border-radius:8px; padding:3px; gap:2px; }
+.nav-tab { padding:5px 20px; border-radius:6px; border:none; cursor:pointer; font-family:'Palanquin',Arial,sans-serif; font-size:13px; font-weight:500; transition:all 0.2s; background:transparent; color:rgba(255,255,255,0.55); }
+.nav-tab:hover { color:white; }
+.nav-tab.active { background:var(--teal); color:var(--navy); font-weight:600; }
+.nav-actions { display:flex; gap:8px; }
+.btn { padding:7px 16px; border-radius:7px; border:none; cursor:pointer; font-family:'Palanquin',Arial,sans-serif; font-size:13px; font-weight:600; transition:all 0.18s; }
+.btn-ghost { background:rgba(255,255,255,0.1); color:rgba(255,255,255,0.8); border:1px solid rgba(255,255,255,0.15); }
+.btn-ghost:hover { background:rgba(255,255,255,0.18); color:white; }
+
+/* NOTIFICATION */
+.notif-banner { display:none; align-items:center; gap:14px; padding:14px 28px; background:linear-gradient(135deg, #FEF3C7, #FFFBEB); border-bottom:1px solid #FCD34D; }
+.notif-banner.visible { display:flex; }
+.notif-icon { font-size:22px; }
+.notif-text { flex:1; font-size:13px; font-weight:500; color:#92400E; }
+.notif-text strong { color:#D97706; }
+.notif-action { padding:7px 16px; background:var(--amber); color:white; border:none; border-radius:7px; font-family:'Palanquin',Arial,sans-serif; font-size:12px; font-weight:700; cursor:pointer; }
+.notif-close { background:none; border:none; cursor:pointer; color:#92400E; font-size:18px; padding:2px 8px; border-radius:4px; }
+.notif-close:hover { background:rgba(0,0,0,0.08); }
+
+/* LAYOUT */
+.page-wrap { padding:28px; max-width:1400px; margin:0 auto; }
+.page-header { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:24px; }
+.page-title { font-size:22px; font-weight:700; color:var(--navy); margin-bottom:2px; }
+.page-sub { font-size:13px; color:var(--text-muted); }
+
+/* SUMMARY TOP */
+.summary-row { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:20px; }
+.summary-card { background:var(--surface); border:1px solid var(--border); border-radius:11px; padding:16px 18px; display:flex; align-items:center; gap:12px; }
+.summary-icon { width:38px; height:38px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+.summary-info { flex:1; min-width:0; }
+.summary-label { font-size:11px; color:var(--text-muted); font-weight:500; margin-bottom:3px; }
+.summary-value { font-size:20px; font-weight:700; color:var(--navy); line-height:1; }
+
+/* CANAL TABS */
+.canal-tabs { display:flex; gap:4px; border-bottom:1px solid var(--border); margin-bottom:20px; }
+.canal-tab { padding:10px 18px; border:none; background:transparent; font-family:'Palanquin',Arial,sans-serif; font-size:13px; font-weight:600; color:var(--text-muted); cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-1px; transition:all 0.15s; display:flex; align-items:center; gap:7px; }
+.canal-tab:hover { color:var(--text); }
+.canal-tab.active { color:var(--navy); border-bottom-color:var(--teal); }
+.canal-dot { width:8px; height:8px; border-radius:50%; }
+
+/* CANAL PANEL */
+.canal-panel { display:none; }
+.canal-panel.active { display:grid; grid-template-columns:320px 1fr; gap:20px; }
+
+/* FORM CARD */
+.form-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px; }
+.form-card-title { font-size:13px; font-weight:700; color:var(--navy); margin-bottom:14px; display:flex; align-items:center; justify-content:space-between; }
+.week-badge { font-size:11px; padding:3px 9px; background:var(--bg); border:1px solid var(--border); border-radius:6px; color:var(--text-muted); font-weight:600; }
+.form-field { margin-bottom:11px; }
+.form-label { display:block; font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:5px; }
+.form-input { width:100%; padding:8px 11px; background:var(--bg); border:1.5px solid var(--border); border-radius:7px; color:var(--text); font-family:'Palanquin',Arial,sans-serif; font-size:14px; font-weight:600; outline:none; transition:border-color 0.15s; }
+.form-input:focus { border-color:var(--teal); }
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.form-section-label { font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.6px; padding:8px 0 6px; border-top:1px solid var(--border); margin-top:6px; display:flex; align-items:center; gap:6px; }
+
+/* UPLOAD ZONE */
+.upload-zone { border:2px dashed var(--border); border-radius:10px; padding:18px; text-align:center; cursor:pointer; transition:all 0.2s; margin-top:8px; position:relative; }
+.upload-zone:hover, .upload-zone.dragover { border-color:var(--teal); background:var(--teal-light); }
+.upload-zone input[type=file] { position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; height:100%; }
+.upload-icon { font-size:26px; margin-bottom:5px; }
+.upload-text { font-size:12px; font-weight:600; color:var(--navy); margin-bottom:2px; }
+.upload-sub { font-size:11px; color:var(--text-muted); }
+.ai-badge { display:inline-flex; align-items:center; gap:3px; background:var(--teal-light); color:var(--teal); font-size:10px; font-weight:700; padding:2px 7px; border-radius:10px; text-transform:uppercase; }
+
+/* AI PROCESSING */
+.ai-processing { display:none; align-items:center; gap:9px; padding:10px 13px; background:var(--teal-light); border:1px solid var(--teal-mid); border-radius:8px; font-size:12px; font-weight:500; color:var(--teal); margin-top:8px; }
+.ai-processing.visible { display:flex; }
+.ai-spinner { width:14px; height:14px; border:2px solid var(--teal-mid); border-top-color:var(--teal); border-radius:50%; animation:spin 0.8s linear infinite; flex-shrink:0; }
+@keyframes spin { to { transform:rotate(360deg); } }
+
+/* SAVE BTN */
+.save-btn { width:100%; padding:10px; background:var(--navy); color:var(--teal); border:none; border-radius:9px; font-family:'Palanquin',Arial,sans-serif; font-size:13px; font-weight:700; cursor:pointer; margin-top:14px; transition:all 0.15s; }
+.save-btn:hover { background:var(--teal); color:var(--navy); }
+
+/* CHARTS AREA */
+.charts-area { display:flex; flex-direction:column; gap:14px; }
+.kpi-row { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+.kpi-card { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:14px 16px; }
+.kpi-label { font-size:11px; font-weight:600; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.4px; margin-bottom:6px; }
+.kpi-value { font-size:22px; font-weight:700; color:var(--navy); line-height:1; margin-bottom:4px; }
+.kpi-delta { font-size:11px; font-weight:600; display:flex; align-items:center; gap:3px; }
+.delta-up { color:var(--green); }
+.delta-down { color:var(--red); }
+.delta-none { color:var(--text-muted); }
+
+.chart-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+.chart-title { font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:14px; display:flex; align-items:center; gap:6px; }
+.chart-title::before { content:''; display:block; width:3px; height:14px; background:var(--teal); border-radius:2px; }
+.chart-wrap { height:140px; position:relative; }
+.chart-wrap canvas { width:100% !important; }
+
+.chart-grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+
+.empty-chart { display:flex; flex-direction:column; align-items:center; justify-content:center; height:120px; color:var(--text-muted); gap:6px; font-size:12px; }
+.empty-chart-icon { font-size:28px; }
+
+/* WEEK HISTORY */
+.history-table { width:100%; border-collapse:collapse; font-size:12px; }
+.history-table th { padding:8px 12px; text-align:left; font-size:10px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; border-bottom:1px solid var(--border); background:var(--bg); }
+.history-table td { padding:9px 12px; border-bottom:1px solid var(--border); color:var(--text); }
+.history-table tr:last-child td { border-bottom:none; }
+.history-table tr:hover td { background:#F8FAFC; }
+.badge-up { color:var(--green); font-weight:700; }
+.badge-down { color:var(--red); font-weight:700; }
+
+@keyframes fadeInUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+</style>
+</head>
+<body>
+
+<!-- NOTIFICATION BANNER -->
+<div class="notif-banner" id="notif-banner">
+  <div class="notif-icon">⚠️</div>
+  <div class="notif-text"><strong>Relatório semanal pendente!</strong> Hoje é sexta-feira — hora de registrar as métricas da semana.</div>
+  <button class="notif-action" onclick="scrollToForm()">Registrar agora</button>
+  <button class="notif-close" onclick="dismissNotif()">✕</button>
+</div>
+
+<nav>
+  <div class="nav-logo" onclick="window.location.href='index.html'">
+    <img src="Ativo 1.png" alt="Marvee">
+  </div>
+  <div class="nav-tabs">
+    <button class="nav-tab active">Métricas</button>
+    <button class="nav-tab" onclick="window.location.href='index.html'">Produção</button>
+    <button class="nav-tab" onclick="window.location.href='index.html'">Calendário</button>
+    <button class="nav-tab" onclick="window.location.href='index.html'">Dados</button>
+    <button class="nav-tab" onclick="window.location.href='index.html'">✦ IA</button>
+  </div>
+  <div class="nav-actions">
+    <button class="btn btn-ghost" onclick="exportMetrics()">↓ Exportar</button>
+  </div>
+</nav>
+
+<div class="page-wrap">
+
+  <!-- HEADER -->
+  <div class="page-header">
+    <div>
+      <div class="page-title">Métricas semanais</div>
+      <div class="page-sub" id="page-sub-text">Acompanhamento semana a semana de todos os canais</div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <select id="week-selector" style="padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;background:var(--surface);font-family:'Palanquin',Arial,sans-serif;font-size:13px;color:var(--text);outline:none;cursor:pointer" onchange="renderAll()">
+      </select>
+    </div>
+  </div>
+
+  <!-- CANAL TABS -->
+  <div class="canal-tabs">
+    <button class="canal-tab active" onclick="switchCanal('ig',this)">
+      <div class="canal-dot" style="background:var(--ig)"></div> Instagram
+    </button>
+    <button class="canal-tab" onclick="switchCanal('li',this)">
+      <div class="canal-dot" style="background:var(--li)"></div> LinkedIn
+    </button>
+    <button class="canal-tab" onclick="switchCanal('kit',this)">
+      <div class="canal-dot" style="background:var(--kit)"></div> Kit (E-mail)
+    </button>
+    <button class="canal-tab" onclick="switchCanal('yt',this)">
+      <div class="canal-dot" style="background:var(--yt)"></div> YouTube
+    </button>
+  </div>
+
+  <!-- IG PANEL -->
+  <div class="canal-panel active" id="panel-ig">
+    <div class="form-card" id="form-anchor">
+      <div class="form-card-title">
+        Registrar semana
+        <span class="week-badge" id="ig-week-badge">—</span>
+      </div>
+
+      <div class="upload-zone" id="ig-upload-zone" ondragover="handleDragOver(event,'ig')" ondragleave="handleDragLeave(event,'ig')" ondrop="handleDrop(event,'ig')">
+        <input type="file" accept="image/*,.csv" onchange="handleFileUpload(event,'ig')">
+        <div class="upload-icon">📎</div>
+        <div class="upload-text">Arraste print ou CSV do Instagram</div>
+        <div class="upload-sub">Meta Business Suite · <span class="ai-badge">✦ IA lê automaticamente</span></div>
+      </div>
+      <div class="ai-processing" id="ig-processing">
+        <div class="ai-spinner"></div>
+        <span>Claude analisando imagem e extraindo métricas...</span>
+      </div>
+
+      <div class="form-section-label" style="margin-top:14px">📊 Alcance & Visualizações</div>
+      <div class="form-row">
+        <div class="form-field"><label class="form-label">Visualizações</label><input class="form-input" type="number" id="ig-views" placeholder="0"></div>
+        <div class="form-field"><label class="form-label">Alcance</label><input class="form-input" type="number" id="ig-reach" placeholder="0"></div>
+      </div>
+
+      <div class="form-section-label">❤️ Engajamento</div>
+      <div class="form-row">
+        <div class="form-field"><label class="form-label">Interações</label><input class="form-input" type="number" id="ig-interactions" placeholder="0"></div>
+        <div class="form-field"><label class="form-label">Novos seguidores</label><input class="form-input" type="number" id="ig-followers-gained" placeholder="0"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-field"><label class="form-label">Cliques no link</label><input class="form-input" type="number" id="ig-link-clicks" placeholder="0"></div>
+        <div class="form-field"><label class="form-label">Visitas ao perfil</label><input class="form-input" type="number" id="ig-profile-visits" placeholder="0"></div>
+      </div>
+
+      <div class="form-section-label">👥 Audiência</div>
+      <div class="form-row">
+        <div class="form-field"><label class="form-label">Total seguidores</label><input class="form-input" type="number" id="ig-followers-total" placeholder="0"></div>
+        <div class="form-field"><label class="form-label">Deixaram de seguir</label><input class="form-input" type="number" id="ig-unfollows" placeholder="0"></div>
+      </div>
+
+      <button class="save-btn" onclick="saveMetrics('ig')">💾 Salvar semana</button>
+    </div>
+
+    <div class="charts-area">
+      <div class="kpi-row" id="ig-kpis">
+        <div class="kpi-card"><div class="kpi-label">Visualizações</div><div class="kpi-value" id="ig-kpi-views">—</div><div class="kpi-delta delta-none" id="ig-kpi-views-d">vs semana anterior</div></div>
+        <div class="kpi-card"><div class="kpi-label">Alcance</div><div class="kpi-value" id="ig-kpi-reach">—</div><div class="kpi-delta delta-none" id="ig-kpi-reach-d">vs semana anterior</div></div>
+        <div class="kpi-card"><div class="kpi-label">Interações</div><div class="kpi-value" id="ig-kpi-inter">—</div><div class="kpi-delta delta-none" id="ig-kpi-inter-d">vs semana anterior</div></div>
+        <div class="kpi-card"><div class="kpi-label">Seguidores</div><div class="kpi-value" id="ig-kpi-fol">—</div><div class="kpi-delta delta-none" id="ig-kpi-fol-d">vs semana anterior</div></div>
+      </div>
+      <div class="chart-grid-2">
+        <div class="chart-card">
+          <div class="chart-title">Visualizações × Alcance</div>
+          <div class="chart-wrap"><canvas id="ig-chart-1"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">Interações × Seguidores ganhos</div>
+          <div class="chart-wrap"><canvas id="ig-chart-2"></canvas></div>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Histórico de semanas</div>
+        <div id="ig-history-table"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LI PANEL -->
+  <div class="canal-panel" id="panel-li">
+    <div class="form-card">
+      <div class="form-card-title">Registrar semana <span class="week-badge" id="li-week-badge">—</span></div>
+      <div class="upload-zone" ondragover="handleDragOver(event,'li')" ondragleave="handleDragLeave(event,'li')" ondrop="handleDrop(event,'li')">
+        <input type="file" accept="image/*,.csv" onchange="handleFileUpload(event,'li')">
+        <div class="upload-icon">📎</div>
+        <div class="upload-text">Arraste print ou CSV do LinkedIn</div>
+        <div class="upload-sub">Analytics & Tools · <span class="ai-badge">✦ IA lê automaticamente</span></div>
+      </div>
+      <div class="ai-processing" id="li-processing"><div class="ai-spinner"></div><span>Extraindo métricas...</span></div>
+
+      <div class="form-section-label" style="margin-top:14px">📊 Alcance</div>
+      <div class="form-row">
+        <div class="form-field"><label class="form-label">Impressões</label><input class="form-input" type="number" id="li-impressions" placeholder="0"></div>
+        <div class="form-field"><label class="form-label">Visualizações do perfil</label><input class="form-input" type="number" id="li-profile-views" placeholder="0"></div>
+      </div>
+
+      <div class="form-section-label">❤️ Engajamento</div>
+      <div class="form-row">
+        <div class="form-field"><label class="form-label">Reações</label><input class="form-input" type="number" id="li-reactions" placeholder="0"></div>
+        <div class="form-field"><label class="form-label">Comentários</label><input class="form-input" type="number" id="li-comments" placeholder="0"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-field"><label class="form-label">Compartilhamentos</label><input class="form-input" type="number" id="li-shares" placeholder="0"></div>
+        <div class="form-field"><label class="form-label">Ocorrências do perfil</label><input class="form-input" type="number" id="li-occurrences" placeholder="0"></div>
+      </div>
+
+      <div class="form-section-label">👥 Audiência</div>
+      <div class="form-row">
+        <div class="form-field"><label class="form-label">Total seguidores</label><input class="form-input" type="number" id="li-followers" placeholder="0"></div>
+        <div class="form-field"><label class="form-label">Novos seguidores</label><input class="form-input" type="number" id="li-new-followers" placeholder="0"></div>
+      </div>
+
+      <button class="save-btn" onclick="saveMetrics('li')">💾 Salvar semana</button>
+    </div>
+
+    <div class="charts-area">
+      <div class="kpi-row">
+        <div class="kpi-card"><div class="kpi-label">Impressões</div><div class="kpi-value" id="li-kpi-imp">—</div><div class="kpi-delta delta-none" id="li-kpi-imp-d">vs semana anterior</div></div>
+        <div class="kpi-card"><div class="kpi-label">Reações</div><div class="kpi-value" id="li-kpi-rea">—</div><div class="kpi-delta delta-none" id="li-kpi-rea-d">vs semana anterior</div></div>
+        <div class="kpi-card"><div class="kpi-label">Seguidores</div><div class="kpi-value" id="li-kpi-fol">—</div><div class="kpi-delta delta-none" id="li-kpi-fol-d">vs semana anterior</div></div>
+        <div class="kpi-card"><div class="kpi-label">Visualiz. perfil</div><div class="kpi-value" id="li-kpi-pv">—</div><div class="kpi-delta delta-none" id="li-kpi-pv-d">vs semana anterior</div></div>
+      </div>
+      <div class="chart-grid-2">
+        <div class="chart-card"><div class="chart-title">Impressões semanais</div><div class="chart-wrap"><canvas id="li-chart-1"></canvas></div></div>
+        <div class="chart-card"><div class="chart-title">Engajamento (reações + comentários)</div><div class="chart-wrap"><canvas id="li-chart-2"></canvas></div></div>
+      </div>
+      <div class="chart-card"><div class="chart-title">Histórico de semanas</div><div id="li-history-table"></div></div>
+    </div>
+  </div>
+
+  <!-- KIT PANEL -->
+  <div class="canal-panel" id="panel-kit">
+    <div class="form-card">
+      <div class="form-card-title">Registrar semana <span class="week-badge" id="kit-week-badge">—</span></div>
+      <div class="upload-zone" ondragover="handleDragOver(event,'kit')" ondragleave="handleDragLeave(event,'kit')" ondrop="handleDrop(event,'kit')">
+        <input type="file" accept="image/*,.csv" onchange="handleFileUpload(event,'kit')">
+        <div class="upload-icon">📎</div>
+        <div class="upload-text">Arraste print ou CSV do Kit.com</div>
+        <div class="upload-sub">Broadcasts · <span class="ai-badge">✦ IA lê automaticamente</span></div>
+      </div>
+      <div class="ai-processing" id="kit-processing"><div class="ai-spinner"></div><span>Extraindo métricas...</span></div>
+
+      <div class="form-section-label" style="margin-top:14px">📬 Lista</div>
+      <div class="form-row">
+        <div class="form-field"><label class="form-label">Total de inscritos</label><input class="form-input" type="number" id="kit-subscribers" placeholder="0"></div>
+        <div class="form-field"><label class="form-label">Novos inscritos</label><input class="form-input" type="number" id="kit-new-subscribers" placeholder="0"></div>
+      </div>
+
+      <div class="form-section-label">📊 Performance dos broadcasts</div>
+      <div class="form-row">
+        <div class="form-field"><label class="form-label">E-mails enviados</label><input class="form-input" type="number" id="kit-sent" placeholder="0"></div>
+        <div class="form-field"><label class="form-label">Taxa de abertura (%)</label><input class="form-input" type="number" step="0.1" id="kit-open-rate" placeholder="0.0"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-field"><label class="form-label">Taxa de clique (%)</label><input class="form-input" type="number" step="0.1" id="kit-click-rate" placeholder="0.0"></div>
+        <div class="form-field"><label class="form-label">Descadastros</label><input class="form-input" type="number" id="kit-unsubs" placeholder="0"></div>
+      </div>
+
+      <button class="save-btn" onclick="saveMetrics('kit')">💾 Salvar semana</button>
+    </div>
+
+    <div class="charts-area">
+      <div class="kpi-row">
+        <div class="kpi-card"><div class="kpi-label">Inscritos</div><div class="kpi-value" id="kit-kpi-sub">—</div><div class="kpi-delta delta-none" id="kit-kpi-sub-d">vs semana anterior</div></div>
+        <div class="kpi-card"><div class="kpi-label">Taxa abertura</div><div class="kpi-value" id="kit-kpi-or">—</div><div class="kpi-delta delta-none" id="kit-kpi-or-d">vs semana anterior</div></div>
+        <div class="kpi-card"><div class="kpi-label">Taxa clique</div><div class="kpi-value" id="kit-kpi-cr">—</div><div class="kpi-delta delta-none" id="kit-kpi-cr-d">vs semana anterior</div></div>
+        <div class="kpi-card"><div class="kpi-label">Descadastros</div><div class="kpi-value" id="kit-kpi-un">—</div><div class="kpi-delta delta-none" id="kit-kpi-un-d">vs semana anterior</div></div>
+      </div>
+      <div class="chart-grid-2">
+        <div class="chart-card"><div class="chart-title">Taxa de abertura semanal</div><div class="chart-wrap"><canvas id="kit-chart-1"></canvas></div></div>
+        <div class="chart-card"><div class="chart-title">Crescimento da lista</div><div class="chart-wrap"><canvas id="kit-chart-2"></canvas></div></div>
+      </div>
+      <div class="chart-card"><div class="chart-title">Histórico de semanas</div><div id="kit-history-table"></div></div>
+    </div>
+  </div>
+
+  <!-- YT PANEL -->
+  <div class="canal-panel" id="panel-yt">
+    <div class="form-card">
+      <div class="form-card-title">Registrar semana <span class="week-badge" id="yt-week-badge">—</span></div>
+      <div class="upload-zone" ondragover="handleDragOver(event,'yt')" ondragleave="handleDragLeave(event,'yt')" ondrop="handleDrop(event,'yt')">
+        <input type="file" accept="image/*,.csv" onchange="handleFileUpload(event,'yt')">
+        <div class="upload-icon">📎</div>
+        <div class="upload-text">Arraste print ou CSV do YouTube Studio</div>
+        <div class="upload-sub">Analytics → Modo avançado · <span class="ai-badge">✦ IA lê automaticamente</span></div>
+      </div>
+      <div class="ai-processing" id="yt-processing"><div class="ai-spinner"></div><span>Extraindo métricas...</span></div>
+
+      <div class="form-section-label" style="margin-top:14px">📊 Desempenho</div>
+      <div class="form-row">
+        <div class="form-field"><label class="form-label">Visualizações</label><input class="form-input" type="number" id="yt-views" placeholder="0"></div>
+        <div class="form-field"><label class="form-label">Tempo exibição (h)</label><input class="form-input" type="number" step="0.1" id="yt-watch-time" placeholder="0.0"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-field"><label class="form-label">Taxa de cliques CTR (%)</label><input class="form-input" type="number" step="0.1" id="yt-ctr" placeholder="0.0"></div>
+        <div class="form-field"><label class="form-label">Duração média (s)</label><input class="form-input" type="number" id="yt-avg-duration" placeholder="0"></div>
+      </div>
+
+      <div class="form-section-label">👥 Audiência</div>
+      <div class="form-row">
+        <div class="form-field"><label class="form-label">Total inscritos</label><input class="form-input" type="number" id="yt-subscribers" placeholder="0"></div>
+        <div class="form-field"><label class="form-label">Inscritos ganhos</label><input class="form-input" type="number" id="yt-new-subs" placeholder="0"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-field"><label class="form-label">Impressões</label><input class="form-input" type="number" id="yt-impressions" placeholder="0"></div>
+        <div class="form-field"><label class="form-label">Curtidas</label><input class="form-input" type="number" id="yt-likes" placeholder="0"></div>
+      </div>
+
+      <button class="save-btn" onclick="saveMetrics('yt')">💾 Salvar semana</button>
+    </div>
+
+    <div class="charts-area">
+      <div class="kpi-row">
+        <div class="kpi-card"><div class="kpi-label">Visualizações</div><div class="kpi-value" id="yt-kpi-v">—</div><div class="kpi-delta delta-none" id="yt-kpi-v-d">vs semana anterior</div></div>
+        <div class="kpi-card"><div class="kpi-label">Tempo exibição</div><div class="kpi-value" id="yt-kpi-w">—</div><div class="kpi-delta delta-none" id="yt-kpi-w-d">vs semana anterior</div></div>
+        <div class="kpi-card"><div class="kpi-label">Inscritos</div><div class="kpi-value" id="yt-kpi-s">—</div><div class="kpi-delta delta-none" id="yt-kpi-s-d">vs semana anterior</div></div>
+        <div class="kpi-card"><div class="kpi-label">CTR</div><div class="kpi-value" id="yt-kpi-c">—</div><div class="kpi-delta delta-none" id="yt-kpi-c-d">vs semana anterior</div></div>
+      </div>
+      <div class="chart-grid-2">
+        <div class="chart-card"><div class="chart-title">Visualizações semanais</div><div class="chart-wrap"><canvas id="yt-chart-1"></canvas></div></div>
+        <div class="chart-card"><div class="chart-title">Crescimento de inscritos</div><div class="chart-wrap"><canvas id="yt-chart-2"></canvas></div></div>
+      </div>
+      <div class="chart-card"><div class="chart-title">Histórico de semanas</div><div id="yt-history-table"></div></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ============================================================
+// DATA
+// ============================================================
+const STORAGE_KEY = 'marvee-metrics-v1';
+let metricsData = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+// metricsData = { 'ig': [{week:'2026-W12', views:30600, reach:5300, ...}], 'li': [...], ... }
+
+let activeCanal = 'ig';
+let charts = {};
+
+function saveStorage() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(metricsData));
+}
+
+// ============================================================
+// WEEK HELPERS
+// ============================================================
+function getWeekKey(date = new Date()) {
+  const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+  const dayNum = d.getUTCDay() || 7;
+  d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+  const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+  const weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+  return `${d.getUTCFullYear()}-W${String(weekNo).padStart(2,'0')}`;
+}
+
+function weekLabel(key) {
+  const [year, w] = key.split('-W');
+  const simple = parseInt(w);
+  return `Semana ${simple} · ${year}`;
+}
+
+function getCurrentWeekKey() { return getWeekKey(new Date()); }
+
+// ============================================================
+// INIT
+// ============================================================
+function init() {
+  checkFridayNotification();
+  buildWeekSelector();
+  renderAll();
+  updateSummaryRow();
+}
+
+function checkFridayNotification() {
+  const today = new Date();
+  const isFriday = today.getDay() === 5;
+  const dismissed = localStorage.getItem('notif-dismissed-' + getCurrentWeekKey());
+
+  if (isFriday && !dismissed) {
+    document.getElementById('notif-banner').classList.add('visible');
+    // Also request push notification permission
+    if ('Notification' in window && Notification.permission === 'default') {
+      Notification.requestPermission().then(perm => {
+        if (perm === 'granted') {
+          new Notification('Marvee — Métricas pendentes 📊', {
+            body: 'Hoje é sexta-feira. Registre as métricas da semana!',
+            icon: 'Ativo 1.png'
+          });
+        }
+      });
+    } else if ('Notification' in window && Notification.permission === 'granted') {
+      new Notification('Marvee — Métricas pendentes 📊', {
+        body: 'Hoje é sexta-feira. Registre as métricas da semana!',
+        icon: 'Ativo 1.png'
+      });
+    }
+  }
+}
+
+function dismissNotif() {
+  document.getElementById('notif-banner').classList.remove('visible');
+  localStorage.setItem('notif-dismissed-' + getCurrentWeekKey(), '1');
+}
+
+function scrollToForm() {
+  document.getElementById('form-anchor')?.scrollIntoView({ behavior: 'smooth' });
+}
+
+function buildWeekSelector() {
+  const sel = document.getElementById('week-selector');
+  const currentKey = getCurrentWeekKey();
+  const weeks = new Set([currentKey]);
+
+  // Gather all weeks from stored data
+  Object.values(metricsData).forEach(arr => {
+    if (Array.isArray(arr)) arr.forEach(r => weeks.add(r.week));
+  });
+
+  const sorted = [...weeks].sort().reverse();
+  sel.innerHTML = sorted.map(w =>
+    `<option value="${w}" ${w === currentKey ? 'selected' : ''}>${weekLabel(w)}</option>`
+  ).join('');
+}
+
+// ============================================================
+// CANAL SWITCH
+// ============================================================
+function switchCanal(canal, btn) {
+  activeCanal = canal;
+  document.querySelectorAll('.canal-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.canal-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('panel-' + canal).classList.add('active');
+  renderCanal(canal);
+}
+
+// ============================================================
+// SAVE METRICS
+// ============================================================
+function saveMetrics(canal) {
+  const week = document.getElementById('week-selector').value;
+  if (!metricsData[canal]) metricsData[canal] = [];
+
+  const record = { week };
+
+  if (canal === 'ig') {
+    record.views = +document.getElementById('ig-views').value || 0;
+    record.reach = +document.getElementById('ig-reach').value || 0;
+    record.interactions = +document.getElementById('ig-interactions').value || 0;
+    record.followersGained = +document.getElementById('ig-followers-gained').value || 0;
+    record.linkClicks = +document.getElementById('ig-link-clicks').value || 0;
+    record.profileVisits = +document.getElementById('ig-profile-visits').value || 0;
+    record.followersTotal = +document.getElementById('ig-followers-total').value || 0;
+    record.unfollows = +document.getElementById('ig-unfollows').value || 0;
+  } else if (canal === 'li') {
+    record.impressions = +document.getElementById('li-impressions').value || 0;
+    record.profileViews = +document.getElementById('li-profile-views').value || 0;
+    record.reactions = +document.getElementById('li-reactions').value || 0;
+    record.comments = +document.getElementById('li-comments').value || 0;
+    record.shares = +document.getElementById('li-shares').value || 0;
+    record.occurrences = +document.getElementById('li-occurrences').value || 0;
+    record.followers = +document.getElementById('li-followers').value || 0;
+    record.newFollowers = +document.getElementById('li-new-followers').value || 0;
+  } else if (canal === 'kit') {
+    record.subscribers = +document.getElementById('kit-subscribers').value || 0;
+    record.newSubscribers = +document.getElementById('kit-new-subscribers').value || 0;
+    record.sent = +document.getElementById('kit-sent').value || 0;
+    record.openRate = +document.getElementById('kit-open-rate').value || 0;
+    record.clickRate = +document.getElementById('kit-click-rate').value || 0;
+    record.unsubs = +document.getElementById('kit-unsubs').value || 0;
+  } else if (canal === 'yt') {
+    record.views = +document.getElementById('yt-views').value || 0;
+    record.watchTime = +document.getElementById('yt-watch-time').value || 0;
+    record.ctr = +document.getElementById('yt-ctr').value || 0;
+    record.avgDuration = +document.getElementById('yt-avg-duration').value || 0;
+    record.subscribers = +document.getElementById('yt-subscribers').value || 0;
+    record.newSubs = +document.getElementById('yt-new-subs').value || 0;
+    record.impressions = +document.getElementById('yt-impressions').value || 0;
+    record.likes = +document.getElementById('yt-likes').value || 0;
+  }
+
+  // Replace or append
+  const idx = metricsData[canal].findIndex(r => r.week === week);
+  if (idx !== -1) metricsData[canal][idx] = record;
+  else metricsData[canal].push(record);
+
+  saveStorage();
+  buildWeekSelector();
+  renderCanal(canal);
+  updateSummaryRow();
+
+  // Visual feedback
+  const btn = event.target;
+  const orig = btn.textContent;
+  btn.textContent = '✓ Salvo!';
+  btn.style.background = 'var(--green)';
+  btn.style.color = 'white';
+  setTimeout(() => { btn.textContent = orig; btn.style.background = ''; btn.style.color = ''; }, 2000);
+}
+
+// ============================================================
+// RENDER ALL
+// ============================================================
+function renderAll() {
+  renderCanal('ig');
+  renderCanal('li');
+  renderCanal('kit');
+  renderCanal('yt');
+  updateSummaryRow();
+}
+
+function renderCanal(canal) {
+  const data = (metricsData[canal] || []).sort((a,b) => a.week.localeCompare(b.week));
+  if (!data.length) return;
+
+  const current = data[data.length - 1];
+  const prev = data.length > 1 ? data[data.length - 2] : null;
+
+  const weekKey = document.getElementById('week-selector').value;
+  document.getElementById(canal + '-week-badge').textContent = weekLabel(weekKey);
+
+  function delta(curr, prevVal, unit='') {
+    if (!prevVal && prevVal !== 0) return '<span class="delta-none">sem histórico</span>';
+    const diff = curr - prevVal;
+    const pct = prevVal !== 0 ? ((diff/prevVal)*100).toFixed(1) : '—';
+    const cls = diff > 0 ? 'delta-up' : diff < 0 ? 'delta-down' : 'delta-none';
+    const arrow = diff > 0 ? '↑' : diff < 0 ? '↓' : '→';
+    return `<span class="${cls}">${arrow} ${Math.abs(diff)}${unit} (${pct}%)</span>`;
+  }
+
+  function fmtN(n) {
+    if (n >= 1000000) return (n/1000000).toFixed(1)+'M';
+    if (n >= 1000) return (n/1000).toFixed(1)+'k';
+    return String(n);
+  }
+
+  const weeks = data.map(d => weekLabel(d.week).replace(' · '+d.week.split('-')[0],''));
+
+  if (canal === 'ig') {
+    document.getElementById('ig-kpi-views').textContent = fmtN(current.views||0);
+    document.getElementById('ig-kpi-reach').textContent = fmtN(current.reach||0);
+    document.getElementById('ig-kpi-inter').textContent = fmtN(current.interactions||0);
+    document.getElementById('ig-kpi-fol').textContent = '+' + (current.followersGained||0);
+    document.getElementById('ig-kpi-views-d').innerHTML = delta(current.views, prev?.views);
+    document.getElementById('ig-kpi-reach-d').innerHTML = delta(current.reach, prev?.reach);
+    document.getElementById('ig-kpi-inter-d').innerHTML = delta(current.interactions, prev?.interactions);
+    document.getElementById('ig-kpi-fol-d').innerHTML = delta(current.followersGained, prev?.followersGained);
+    drawLineChart('ig-chart-1', weeks, [
+      {label:'Visualizações', data:data.map(d=>d.views||0), color:'#E1306C'},
+      {label:'Alcance', data:data.map(d=>d.reach||0), color:'#F56D91'},
+    ]);
+    drawLineChart('ig-chart-2', weeks, [
+      {label:'Interações', data:data.map(d=>d.interactions||0), color:'#E1306C'},
+      {label:'Seguidores ganhos', data:data.map(d=>d.followersGained||0), color:'#FF9A9E'},
+    ]);
+    renderHistoryTable('ig-history-table', data, ['views','reach','interactions','followersGained','profileVisits'], ['Visualizações','Alcance','Interações','Seg. ganhos','Visitas perfil']);
+  }
+
+  if (canal === 'li') {
+    document.getElementById('li-kpi-imp').textContent = fmtN(current.impressions||0);
+    document.getElementById('li-kpi-rea').textContent = fmtN(current.reactions||0);
+    document.getElementById('li-kpi-fol').textContent = fmtN(current.followers||0);
+    document.getElementById('li-kpi-pv').textContent = fmtN(current.profileViews||0);
+    document.getElementById('li-kpi-imp-d').innerHTML = delta(current.impressions, prev?.impressions);
+    document.getElementById('li-kpi-rea-d').innerHTML = delta(current.reactions, prev?.reactions);
+    document.getElementById('li-kpi-fol-d').innerHTML = delta(current.followers, prev?.followers);
+    document.getElementById('li-kpi-pv-d').innerHTML = delta(current.profileViews, prev?.profileViews);
+    drawLineChart('li-chart-1', weeks, [{label:'Impressões', data:data.map(d=>d.impressions||0), color:'#0077B5'}]);
+    drawLineChart('li-chart-2', weeks, [
+      {label:'Reações', data:data.map(d=>d.reactions||0), color:'#0077B5'},
+      {label:'Comentários', data:data.map(d=>d.comments||0), color:'#00A0DC'},
+    ]);
+    renderHistoryTable('li-history-table', data, ['impressions','reactions','comments','shares','followers'], ['Impressões','Reações','Comentários','Compart.','Seguidores']);
+  }
+
+  if (canal === 'kit') {
+    document.getElementById('kit-kpi-sub').textContent = fmtN(current.subscribers||0);
+    document.getElementById('kit-kpi-or').textContent = (current.openRate||0).toFixed(1)+'%';
+    document.getElementById('kit-kpi-cr').textContent = (current.clickRate||0).toFixed(2)+'%';
+    document.getElementById('kit-kpi-un').textContent = current.unsubs||0;
+    document.getElementById('kit-kpi-sub-d').innerHTML = delta(current.subscribers, prev?.subscribers);
+    document.getElementById('kit-kpi-or-d').innerHTML = delta(current.openRate, prev?.openRate, '%');
+    document.getElementById('kit-kpi-cr-d').innerHTML = delta(current.clickRate, prev?.clickRate, '%');
+    document.getElementById('kit-kpi-un-d').innerHTML = delta(current.unsubs, prev?.unsubs);
+    drawLineChart('kit-chart-1', weeks, [{label:'Taxa de abertura (%)', data:data.map(d=>d.openRate||0), color:'#5BC0BE'}]);
+    drawLineChart('kit-chart-2', weeks, [{label:'Total inscritos', data:data.map(d=>d.subscribers||0), color:'#1C2541'}]);
+    renderHistoryTable('kit-history-table', data, ['subscribers','newSubscribers','sent','openRate','clickRate','unsubs'], ['Inscritos','Novos','Enviados','Abertura%','Clique%','Descad.']);
+  }
+
+  if (canal === 'yt') {
+    document.getElementById('yt-kpi-v').textContent = fmtN(current.views||0);
+    document.getElementById('yt-kpi-w').textContent = (current.watchTime||0).toFixed(1)+'h';
+    document.getElementById('yt-kpi-s').textContent = fmtN(current.subscribers||0);
+    document.getElementById('yt-kpi-c').textContent = (current.ctr||0).toFixed(1)+'%';
+    document.getElementById('yt-kpi-v-d').innerHTML = delta(current.views, prev?.views);
+    document.getElementById('yt-kpi-w-d').innerHTML = delta(current.watchTime, prev?.watchTime, 'h');
+    document.getElementById('yt-kpi-s-d').innerHTML = delta(current.subscribers, prev?.subscribers);
+    document.getElementById('yt-kpi-c-d').innerHTML = delta(current.ctr, prev?.ctr, '%');
+    drawLineChart('yt-chart-1', weeks, [{label:'Visualizações', data:data.map(d=>d.views||0), color:'#FF0000'}]);
+    drawLineChart('yt-chart-2', weeks, [{label:'Inscritos', data:data.map(d=>d.subscribers||0), color:'#282828'}]);
+    renderHistoryTable('yt-history-table', data, ['views','watchTime','subscribers','newSubs','ctr'], ['Views','Tempo(h)','Inscritos','Novos inscritos','CTR%']);
+  }
+}
+
+// ============================================================
+// CHART.JS
+// ============================================================
+function drawLineChart(canvasId, labels, datasets) {
+  if (charts[canvasId]) { charts[canvasId].destroy(); }
+  const ctx = document.getElementById(canvasId);
+  if (!ctx) return;
+  if (labels.length < 2) {
+    const wrap = ctx.parentElement;
+    wrap.innerHTML = '<div class="empty-chart"><div style="font-size:28px">📈</div><div>Registre mais semanas para ver a evolução</div></div>';
+    return;
+  }
+  charts[canvasId] = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: datasets.map(ds => ({
+        label: ds.label,
+        data: ds.data,
+        borderColor: ds.color,
+        backgroundColor: ds.color + '18',
+        borderWidth: 2,
+        pointRadius: 3,
+        pointHoverRadius: 5,
+        tension: 0.35,
+        fill: true,
+      }))
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: datasets.length > 1, labels: { font: { family: 'Palanquin', size: 11 }, boxWidth: 10, padding: 10 } },
+        tooltip: { titleFont: { family: 'Palanquin' }, bodyFont: { family: 'Palanquin' } }
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: { family: 'Palanquin', size: 10 }, color: '#7A90A8' } },
+        y: { grid: { color: '#E2E8F0' }, ticks: { font: { family: 'Palanquin', size: 10 }, color: '#7A90A8' } }
+      }
+    }
+  });
+}
+
+// ============================================================
+// HISTORY TABLE
+// ============================================================
+function renderHistoryTable(containerId, data, fields, labels) {
+  const container = document.getElementById(containerId);
+  if (!data.length) {
+    container.innerHTML = '<div class="empty-chart"><div>Nenhum dado registrado ainda.</div></div>';
+    return;
+  }
+  const sorted = [...data].sort((a,b) => b.week.localeCompare(a.week)).slice(0,8);
+  container.innerHTML = `
+    <table class="history-table">
+      <thead><tr>
+        <th>Semana</th>
+        ${labels.map(l=>`<th>${l}</th>`).join('')}
+      </tr></thead>
+      <tbody>
+        ${sorted.map((row, i) => {
+          const prev = sorted[i+1];
+          return `<tr>
+            <td style="font-weight:600;color:var(--navy)">${weekLabel(row.week)}</td>
+            ${fields.map(f => {
+              const val = row[f] ?? '—';
+              const prevVal = prev?.[f];
+              let delta = '';
+              if (prevVal !== undefined && typeof val === 'number') {
+                const d = val - prevVal;
+                delta = d > 0 ? ` <span class="badge-up">↑${Math.abs(d)}</span>` : d < 0 ? ` <span class="badge-down">↓${Math.abs(d)}</span>` : '';
+              }
+              return `<td>${val}${delta}</td>`;
+            }).join('')}
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table>`;
+}
+
+// ============================================================
+// SUMMARY ROW
+// ============================================================
+function updateSummaryRow() {
+  function latest(canal, field) {
+    const arr = metricsData[canal];
+    if (!arr?.length) return '—';
+    const sorted = [...arr].sort((a,b) => b.week.localeCompare(a.week));
+    const val = sorted[0][field];
+    if (val === undefined) return '—';
+    if (typeof val === 'number' && val >= 1000) return (val/1000).toFixed(1)+'k';
+    return String(val);
+  }
+  document.getElementById('sum-ig').textContent = latest('ig','reach');
+  document.getElementById('sum-li').textContent = latest('li','impressions');
+  document.getElementById('sum-kit').textContent = metricsData['kit']?.length ? ([...metricsData['kit']].sort((a,b)=>b.week.localeCompare(a.week))[0].openRate?.toFixed(1)+'%' || '—') : '—';
+  document.getElementById('sum-yt').textContent = latest('yt','views');
+}
+
+// ============================================================
+// FILE UPLOAD + AI EXTRACTION
+// ============================================================
+function handleDragOver(e, canal) {
+  e.preventDefault();
+  document.querySelector(`#panel-${canal} .upload-zone`)?.classList.add('dragover');
+}
+function handleDragLeave(e, canal) {
+  document.querySelector(`#panel-${canal} .upload-zone`)?.classList.remove('dragover');
+}
+function handleDrop(e, canal) {
+  e.preventDefault();
+  document.querySelector(`#panel-${canal} .upload-zone`)?.classList.remove('dragover');
+  const file = e.dataTransfer.files[0];
+  if (file) processFile(file, canal);
+}
+function handleFileUpload(e, canal) {
+  const file = e.target.files[0];
+  if (file) processFile(file, canal);
+}
+
+async function processFile(file, canal) {
+  const processing = document.getElementById(canal + '-processing');
+  processing.classList.add('visible');
+
+  try {
+    if (file.name.endsWith('.csv')) {
+      await processCSV(file, canal);
+    } else {
+      await processImage(file, canal);
+    }
+  } catch(err) {
+    console.error(err);
+    processing.querySelector('span').textContent = '⚠️ Erro ao processar. Preencha manualmente.';
+    setTimeout(() => { processing.classList.remove('visible'); processing.querySelector('span').textContent = 'Extraindo métricas...'; }, 3000);
+    return;
+  }
+  processing.classList.remove('visible');
+}
+
+async function processCSV(file, canal) {
+  const text = await file.text();
+  const lines = text.split('\n').filter(l => l.trim());
+
+  if (canal === 'ig') {
+    // Meta Business Suite CSV: Identificação do post, ..., Visualizações, Alcance, Curtidas...
+    let totalViews=0, totalReach=0, totalLikes=0, totalShares=0, totalComments=0, totalSaves=0;
+    lines.slice(1).forEach(line => {
+      const cols = line.split(',');
+      if (cols.length < 12) return;
+      totalViews += +(cols[11]||0); totalReach += +(cols[12]||0);
+      totalLikes += +(cols[13]||0); totalShares += +(cols[14]||0);
+      totalComments += +(cols[16]||0); totalSaves += +(cols[17]||0);
+    });
+    document.getElementById('ig-views').value = totalViews;
+    document.getElementById('ig-reach').value = totalReach;
+    document.getElementById('ig-interactions').value = totalLikes + totalComments + totalSaves + totalShares;
+  }
+  showFilledFeedback(canal);
+}
+
+async function processImage(file, canal) {
+  const base64 = await fileToBase64(file);
+  const mediaType = file.type || 'image/jpeg';
+
+  const systemPrompt = `Você é um extrator de métricas de redes sociais. Analise a imagem e extraia APENAS os números das métricas visíveis. Responda SOMENTE com um JSON válido, sem texto adicional. Se não encontrar um valor, use null.`;
+
+  const userPrompt = canalPrompt(canal);
+
+  const response = await fetch('/api/chat', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      system: systemPrompt,
+      messages: [{
+        role: 'user',
+        content: [
+          { type: 'image', source: { type: 'base64', media_type: mediaType, data: base64 } },
+          { type: 'text', text: userPrompt }
+        ]
+      }]
+    })
+  });
+
+  const data = await response.json();
+  const text = data.content?.[0]?.text || '{}';
+  const cleaned = text.replace(/```json|```/g, '').trim();
+  const extracted = JSON.parse(cleaned);
+  fillForm(canal, extracted);
+  showFilledFeedback(canal);
+}
+
+function canalPrompt(canal) {
+  const prompts = {
+    ig: 'Extraia do print do Instagram/Meta Business Suite: visualizacoes (total views), alcance (reach), interacoes (interactions), seguidores_ganhos (new followers), cliques_link (link clicks), visitas_perfil (profile visits), total_seguidores (total followers). Formato: {"views": N, "reach": N, "interactions": N, "followersGained": N, "linkClicks": N, "profileVisits": N, "followersTotal": N}',
+    li: 'Extraia do print do LinkedIn Analytics: impressoes (impressions), visualizacoes_perfil (profile views), reacoes (reactions), comentarios (comments), compartilhamentos (shares), ocorrencias (occurrences), seguidores (followers), novos_seguidores (new followers). Formato: {"impressions": N, "profileViews": N, "reactions": N, "comments": N, "shares": N, "occurrences": N, "followers": N, "newFollowers": N}',
+    kit: 'Extraia do print do Kit.com: total_inscritos (subscribers), novos_inscritos (new subscribers), emails_enviados (emails sent), taxa_abertura (open rate como número ex: 43.03), taxa_clique (click rate como número ex: 0.60), descadastros (unsubscribes). Formato: {"subscribers": N, "newSubscribers": N, "sent": N, "openRate": N, "clickRate": N, "unsubs": N}',
+    yt: 'Extraia do print do YouTube Studio: visualizacoes (views), tempo_exibicao (watch time in hours), ctr (click-through rate como número), duracao_media (average view duration in seconds), inscritos (total subscribers), novos_inscritos (new subscribers), impressoes (impressions), curtidas (likes). Formato: {"views": N, "watchTime": N, "ctr": N, "avgDuration": N, "subscribers": N, "newSubs": N, "impressions": N, "likes": N}'
+  };
+  return prompts[canal];
+}
+
+function fillForm(canal, data) {
+  const map = {
+    ig: [['ig-views','views'],['ig-reach','reach'],['ig-interactions','interactions'],['ig-followers-gained','followersGained'],['ig-link-clicks','linkClicks'],['ig-profile-visits','profileVisits'],['ig-followers-total','followersTotal']],
+    li: [['li-impressions','impressions'],['li-profile-views','profileViews'],['li-reactions','reactions'],['li-comments','comments'],['li-shares','shares'],['li-occurrences','occurrences'],['li-followers','followers'],['li-new-followers','newFollowers']],
+    kit: [['kit-subscribers','subscribers'],['kit-new-subscribers','newSubscribers'],['kit-sent','sent'],['kit-open-rate','openRate'],['kit-click-rate','clickRate'],['kit-unsubs','unsubs']],
+    yt: [['yt-views','views'],['yt-watch-time','watchTime'],['yt-ctr','ctr'],['yt-avg-duration','avgDuration'],['yt-subscribers','subscribers'],['yt-new-subs','newSubs'],['yt-impressions','impressions'],['yt-likes','likes']]
+  };
+  (map[canal] || []).forEach(([id, key]) => {
+    if (data[key] !== null && data[key] !== undefined) {
+      document.getElementById(id).value = data[key];
+      document.getElementById(id).style.borderColor = 'var(--teal)';
+      setTimeout(() => { document.getElementById(id).style.borderColor = ''; }, 2000);
+    }
+  });
+}
+
+function showFilledFeedback(canal) {
+  const processing = document.getElementById(canal + '-processing');
+  processing.querySelector('span').textContent = '✓ Métricas extraídas! Revise e salve.';
+  processing.style.background = 'rgba(34,197,94,0.1)';
+  processing.style.borderColor = 'rgba(34,197,94,0.3)';
+  processing.style.color = 'var(--green)';
+  processing.classList.add('visible');
+  setTimeout(() => {
+    processing.classList.remove('visible');
+    processing.querySelector('span').textContent = 'Extraindo métricas...';
+    processing.style.background = '';
+    processing.style.borderColor = '';
+    processing.style.color = '';
+  }, 4000);
+}
+
+function fileToBase64(file) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = () => res(r.result.split(',')[1]);
+    r.onerror = rej;
+    r.readAsDataURL(file);
+  });
+}
+
+// ============================================================
+// EXPORT
+// ============================================================
+function exportMetrics() {
+  const rows = [['Canal','Semana','Métrica','Valor']];
+  Object.entries(metricsData).forEach(([canal, arr]) => {
+    (arr || []).forEach(record => {
+      Object.entries(record).forEach(([k,v]) => {
+        if (k !== 'week') rows.push([canal, record.week, k, v]);
+      });
+    });
+  });
+  const csv = rows.map(r => r.join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+  a.download = `marvee-metricas-${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+}
+
+// ============================================================
+// RUN
+// ============================================================
+init();
+</script>
+</body>
+</html>
