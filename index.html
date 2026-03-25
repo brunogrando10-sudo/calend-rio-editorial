@@ -689,6 +689,100 @@
   ::-webkit-scrollbar-track { background: var(--bg); }
   ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 
+  /* ============================================================
+     MOBILE RESPONSIVE
+  ============================================================ */
+  @media (max-width: 768px) {
+
+    /* NAV */
+    nav { height: auto; flex-wrap: wrap; padding: 10px 14px; gap: 8px; }
+    .nav-logo img { height: 22px; }
+    .nav-tabs { order: 3; width: 100%; overflow-x: auto; padding: 3px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+    .nav-tabs::-webkit-scrollbar { display: none; }
+    .nav-tab { padding: 5px 12px; font-size: 12px; white-space: nowrap; }
+    .nav-actions { gap: 6px; }
+    .btn { padding: 6px 10px; font-size: 12px; }
+
+    /* PAGES */
+    .page { padding: 16px; }
+
+    /* DASHBOARD STATS */
+    .stats-grid { grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+    .stat-card { padding: 14px; }
+    .stat-value { font-size: 24px; }
+    .stat-label { font-size: 10px; }
+
+    /* CHARTS GRID */
+    .charts-grid { grid-template-columns: 1fr; gap: 12px; margin-bottom: 14px; }
+    .card { padding: 16px; }
+
+    /* UPCOMING */
+    .upcoming-item { flex-wrap: wrap; gap: 8px; }
+    .upcoming-title { width: 100%; }
+
+    /* CALENDAR TOOLBAR */
+    .cal-toolbar { flex-direction: column; align-items: flex-start; gap: 10px; margin-bottom: 14px; }
+    .cal-toolbar .page-title { font-size: 18px; }
+    .cal-nav { width: 100%; justify-content: center; }
+    .cal-filters { width: 100%; overflow-x: auto; scrollbar-width: none; padding-bottom: 4px; flex-wrap: nowrap; }
+    .cal-filters::-webkit-scrollbar { display: none; }
+    .filter-btn { font-size: 11px; padding: 4px 10px; white-space: nowrap; }
+
+    /* CALENDAR GRID */
+    .cal-weekday { font-size: 10px; padding: 8px 4px; }
+    .cal-day { padding: 5px 3px; min-height: 72px; }
+    .day-number { font-size: 11px; margin-bottom: 3px; }
+    .today-circle { width: 18px; height: 18px; font-size: 10px; }
+    .day-item { padding: 2px 4px; font-size: 10px; }
+    .day-label { display: none; }
+    .day-dot { width: 7px; height: 7px; margin: 0 auto; }
+    .day-item { justify-content: center; padding: 3px; border-radius: 4px; }
+
+    /* DADOS PAGE */
+    .dados-toolbar { flex-direction: column; gap: 8px; }
+    .dados-search { min-width: unset; width: 100%; }
+    .dados-filter-select { width: 100%; }
+    .dados-actions { width: 100%; justify-content: space-between; }
+    .bulk-bar { flex-wrap: wrap; gap: 8px; padding: 10px 12px; }
+
+    /* TABLE — scroll horizontal */
+    .table-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .data-table { min-width: 600px; }
+    .data-table th, .data-table td { padding: 8px 10px; font-size: 12px; }
+
+    /* IA PAGE */
+    .ia-input-wrap { padding: 0; }
+    .ia-input-box { border-radius: 14px; padding: 8px 8px 6px 10px; }
+    .ia-textarea { font-size: 14px; }
+    .ia-toolbar-left { gap: 2px; overflow-x: auto; scrollbar-width: none; }
+    .ia-toolbar-left::-webkit-scrollbar { display: none; }
+    .ia-mode-btn { font-size: 11px; padding: 4px 7px; white-space: nowrap; }
+    .ia-divider { display: none; }
+    .ia-canal-pill { font-size: 11px; padding: 4px 7px; }
+    .ia-messages { padding: 16px 0; }
+    .ia-bubble { max-width: 90%; font-size: 13px; }
+    .ia-welcome-title { font-size: 17px; }
+    .ia-chips { gap: 6px; }
+    .ia-chip { font-size: 11px; padding: 6px 10px; }
+
+    /* MODALS */
+    .modal { padding: 20px 16px; width: 100%; margin: 10px; border-radius: 14px; }
+
+    /* PAGE HEADER */
+    .page-header { flex-direction: column; gap: 10px; margin-bottom: 16px; }
+    .page-title { font-size: 18px; }
+    .page-sub { font-size: 12px; }
+
+    /* DONUT */
+    .donut-wrapper { flex-direction: column; align-items: flex-start; gap: 16px; }
+  }
+
+  @media (max-width: 400px) {
+    .stats-grid { grid-template-columns: 1fr; }
+    .cal-week { min-height: 60px; }
+    .cal-day { min-height: 60px; }
+  }
+
   /* IA PAGE */
   .ia-page-wrap {
     display: flex;
