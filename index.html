@@ -689,7 +689,252 @@
   ::-webkit-scrollbar-track { background: var(--bg); }
   ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 
-  /* DADOS PAGE */
+  /* IA PAGE */
+  .ia-page-wrap {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 56px - 56px);
+    min-height: 500px;
+  }
+
+  .ia-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 760px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  .ia-message { display: flex; gap: 12px; animation: fadeInUp 0.2s ease; }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .ia-message.user { flex-direction: row-reverse; }
+
+  .ia-avatar {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .ia-avatar.assistant { background: var(--navy); color: var(--teal); border: 1px solid var(--teal-mid); }
+  .ia-avatar.user { background: var(--teal); color: var(--navy); }
+
+  .ia-bubble {
+    max-width: 80%;
+    padding: 12px 16px;
+    border-radius: 16px;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  .ia-message.assistant .ia-bubble {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 4px 16px 16px 16px;
+  }
+
+  .ia-message.user .ia-bubble {
+    background: var(--navy);
+    color: white;
+    border-radius: 16px 4px 16px 16px;
+  }
+
+  .ia-typing {
+    display: flex; gap: 5px;
+    padding: 14px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px 16px 16px 16px;
+    width: fit-content;
+    align-items: center;
+  }
+
+  .ia-typing span {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--teal);
+    animation: typing-bounce 1.2s infinite;
+    opacity: 0.5;
+  }
+
+  .ia-typing span:nth-child(2) { animation-delay: 0.2s; }
+  .ia-typing span:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes typing-bounce {
+    0%, 80%, 100% { transform: translateY(0); opacity: 0.5; }
+    40% { transform: translateY(-5px); opacity: 1; }
+  }
+
+  /* INPUT BOX — inspired by prompt component */
+  .ia-input-wrap {
+    max-width: 760px;
+    width: 100%;
+    margin: 0 auto 8px;
+    flex-shrink: 0;
+  }
+
+  .ia-input-box {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 20px;
+    padding: 10px 10px 8px 14px;
+    box-shadow: 0 4px 24px rgba(11,19,43,0.08);
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .ia-input-box:focus-within {
+    border-color: var(--teal);
+    box-shadow: 0 4px 24px rgba(91,192,190,0.12);
+  }
+
+  .ia-textarea {
+    width: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    resize: none;
+    font-family: 'Palanquin', Arial, sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 44px;
+    max-height: 160px;
+    overflow-y: auto;
+    padding: 4px 0;
+  }
+
+  .ia-textarea::placeholder { color: var(--text-muted); }
+
+  .ia-input-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+  }
+
+  .ia-toolbar-left { display: flex; align-items: center; gap: 4px; }
+
+  .ia-mode-btn {
+    display: flex; align-items: center; gap: 5px;
+    padding: 5px 10px;
+    border-radius: 20px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--text-muted);
+    font-family: 'Palanquin', Arial, sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .ia-mode-btn:hover { background: var(--bg); color: var(--text); }
+  .ia-mode-btn.active-roteiro { border-color: var(--reels); background: rgba(255,107,53,0.08); color: var(--reels); }
+  .ia-mode-btn.active-pauta { border-color: var(--post); background: rgba(124,58,237,0.08); color: var(--post); }
+  .ia-mode-btn.active-email { border-color: var(--linkedin); background: rgba(0,119,181,0.08); color: var(--linkedin); }
+  .ia-mode-btn.active-analise { border-color: var(--teal); background: var(--teal-light); color: var(--teal); }
+
+  .ia-divider { width: 1px; height: 18px; background: var(--border); margin: 0 2px; }
+
+  .ia-canal-pill {
+    display: flex; align-items: center; gap: 5px;
+    padding: 5px 10px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text-muted);
+    font-family: 'Palanquin', Arial, sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.15s;
+  }
+
+  .ia-canal-pill:focus { border-color: var(--teal); }
+
+  .ia-send-btn {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: var(--navy);
+    color: var(--teal);
+    cursor: pointer;
+    font-size: 15px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+    flex-shrink: 0;
+  }
+
+  .ia-send-btn:hover { background: var(--teal); color: var(--navy); transform: scale(1.05); }
+  .ia-send-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+  .ia-send-btn.has-content { background: var(--teal); color: var(--navy); }
+
+  .ia-hint { font-size: 11px; color: var(--text-light); text-align: center; margin-top: 6px; }
+
+  /* WELCOME */
+  .ia-welcome {
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    flex: 1;
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-muted);
+    max-width: 760px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .ia-welcome-glow {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    background: var(--navy);
+    border: 2px solid var(--teal-mid);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px;
+    margin-bottom: 20px;
+    box-shadow: 0 0 32px rgba(91,192,190,0.2);
+  }
+
+  .ia-welcome-title {
+    font-family: 'Palanquin', Arial, sans-serif;
+    font-size: 22px; font-weight: 700;
+    color: var(--navy); margin-bottom: 8px;
+  }
+
+  .ia-welcome-sub {
+    font-size: 14px; color: var(--text-muted);
+    max-width: 360px; line-height: 1.6; margin-bottom: 28px;
+  }
+
+  .ia-chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+
+  .ia-chip {
+    padding: 7px 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    font-family: 'Palanquin', Arial, sans-serif;
+    font-size: 12px; font-weight: 600;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .ia-chip:hover { border-color: var(--teal); color: var(--teal); background: var(--teal-light); }
   .dados-toolbar {
     display: flex;
     align-items: center;
@@ -1067,9 +1312,10 @@
     <img src="Ativo 1.png" class="nav-logo-symbol" alt="Marvee">
   </div>
   <div class="nav-tabs">
-    <button class="nav-tab active" onclick="showPage('dashboard', this)">Dashboard</button>
+    <button class="nav-tab active" onclick="showPage('dashboard', this)">Produção</button>
     <button class="nav-tab" onclick="showPage('calendario', this)">Calendário</button>
     <button class="nav-tab" onclick="showPage('dados', this)">Dados</button>
+    <button class="nav-tab" onclick="showPage('ia', this)">✦ IA</button>
   </div>
   <div class="nav-actions">
     <button class="btn btn-ghost" onclick="openImport()">↑ Importar CSV</button>
@@ -1081,7 +1327,7 @@
 <div id="page-dashboard" class="page active">
   <div class="page-header">
     <div>
-      <div class="page-title">Visão geral</div>
+      <div class="page-title">Produção de conteúdo</div>
       <div class="page-sub" id="dash-subtitle">Carregue seus dados para começar</div>
     </div>
   </div>
@@ -1166,6 +1412,66 @@
       <div class="cal-weekday">Sáb</div>
     </div>
     <div id="cal-weeks"></div>
+  </div>
+</div>
+
+<!-- IA PAGE -->
+<div id="page-ia" class="page" style="padding-bottom:0">
+  <div style="display:flex;flex-direction:column;height:calc(100vh - 56px - 28px)">
+
+    <!-- MESSAGES AREA -->
+    <div class="ia-messages" id="ia-messages">
+      <div class="ia-welcome" id="ia-welcome">
+        <div class="ia-welcome-glow">✦</div>
+        <div class="ia-welcome-title">Assistente de conteúdo Marvee</div>
+        <div class="ia-welcome-sub">Crie roteiros, pautas, e-mails, análises e estratégias de conteúdo com IA especializada na Marvee.</div>
+        <div class="ia-chips">
+          <button class="ia-chip" onclick="useChip('Crie um roteiro de Reels de 60s sobre gestão de caixa para PMEs. Gancho forte nos primeiros 3 segundos.')">🎬 Roteiro Reels</button>
+          <button class="ia-chip" onclick="useChip('Escreva um post de LinkedIn com storytelling sobre um erro financeiro comum de empresários. Termine com pergunta para engajamento.')">💼 Post LinkedIn</button>
+          <button class="ia-chip" onclick="useChip('Crie um e-mail reflexão sobre a diferença entre faturamento alto e lucro real. Método PAS, máximo 300 palavras.')">📧 E-mail reflexão</button>
+          <button class="ia-chip" onclick="useChip('Sugira 10 temas de alto impacto para conteúdo financeiro para PMEs no próximo mês. Ordene por potencial de engajamento.')">🎯 Temas do mês</button>
+          <button class="ia-chip" onclick="useChip('Crie um roteiro completo de vídeo YouTube de 8-10 minutos sobre como estruturar o financeiro da empresa do zero.')">🎥 Roteiro YouTube</button>
+          <button class="ia-chip" onclick="useChip('Monte um calendário editorial completo para 1 semana: 2 Reels, 2 Posts, 1 LinkedIn, 3 E-mails e 1 YouTube. Inclua título e objetivo de cada.')">📅 Calendário semanal</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- INPUT BOX -->
+    <div class="ia-input-wrap">
+      <div class="ia-input-box">
+        <textarea
+          class="ia-textarea"
+          id="ia-input"
+          placeholder="Peça um roteiro, sugestão de pauta, análise de estratégia..."
+          rows="1"
+          onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage()}"
+          oninput="autoResize(this);updateSendBtn()"
+        ></textarea>
+        <div class="ia-input-toolbar">
+          <div class="ia-toolbar-left">
+            <button class="ia-mode-btn" id="btn-roteiro" onclick="toggleMode('roteiro')" title="Modo roteiro">🎬 Roteiro</button>
+            <div class="ia-divider"></div>
+            <button class="ia-mode-btn" id="btn-pauta" onclick="toggleMode('pauta')" title="Modo pauta">📋 Pauta</button>
+            <div class="ia-divider"></div>
+            <button class="ia-mode-btn" id="btn-email" onclick="toggleMode('email')" title="Modo e-mail">📧 E-mail</button>
+            <div class="ia-divider"></div>
+            <button class="ia-mode-btn" id="btn-analise" onclick="toggleMode('analise')" title="Modo análise">📊 Análise</button>
+            <div class="ia-divider"></div>
+            <select class="ia-canal-pill" id="ia-canal-context">
+              <option value="">Canal</option>
+              <option value="Instagram Reels">📱 Reels</option>
+              <option value="Instagram Post">📸 Post</option>
+              <option value="LinkedIn">💼 LinkedIn</option>
+              <option value="E-mail">📧 E-mail</option>
+              <option value="YouTube">🎥 YouTube</option>
+            </select>
+          </div>
+          <button class="ia-send-btn" id="ia-send-btn" onclick="sendMessage()" title="Enviar (Enter)">➤</button>
+        </div>
+      </div>
+      <div class="ia-hint">Enter para enviar · Shift+Enter para nova linha · <span id="ia-clear-btn" onclick="clearChat()" style="cursor:pointer;color:var(--text-muted);text-decoration:underline">Limpar conversa</span></div>
+    </div>
+
   </div>
 </div>
 
@@ -1434,6 +1740,7 @@ function showPage(page, btn) {
   if(page==='dashboard') renderDashboard();
   if(page==='calendario') renderCalendar();
   if(page==='dados') renderDados();
+  if(page==='ia') document.getElementById('ia-input').focus();
 }
 
 // =====================
@@ -1900,6 +2207,154 @@ function applyReschedule() {
   closeModal('modal-reschedule');
   clearSelection();
   renderDados(); renderCalendar(); renderDashboard();
+}
+
+// =====================
+// IA PAGE
+// =====================
+let iaMessages = [];
+let iaLoading = false;
+let iaMode = null;
+
+const modePrompts = {
+  roteiro: 'Você está no modo ROTEIRO. Formate a resposta como um roteiro pronto para gravação, com marcações de cena, tempo e falas.',
+  pauta: 'Você está no modo PAUTA. Formate a resposta como uma pauta editorial estruturada com tópicos, subtópicos e objetivos claros.',
+  email: 'Você está no modo E-MAIL. Formate a resposta como um e-mail pronto para envio, com assunto, corpo e CTA.',
+  analise: 'Você está no modo ANÁLISE. Formate a resposta como uma análise estruturada com insights, dados e recomendações.'
+};
+
+function toggleMode(mode) {
+  if (iaMode === mode) {
+    iaMode = null;
+    document.getElementById('btn-' + mode).className = 'ia-mode-btn';
+  } else {
+    if (iaMode) document.getElementById('btn-' + iaMode).className = 'ia-mode-btn';
+    iaMode = mode;
+    document.getElementById('btn-' + mode).className = `ia-mode-btn active-${mode}`;
+  }
+}
+
+function updateSendBtn() {
+  const val = document.getElementById('ia-input').value.trim();
+  const btn = document.getElementById('ia-send-btn');
+  btn.classList.toggle('has-content', val.length > 0);
+}
+
+function useChip(text) {
+  const input = document.getElementById('ia-input');
+  input.value = text;
+  autoResize(input);
+  updateSendBtn();
+  input.focus();
+}
+
+function usePrompt(text) { useChip(text); }
+
+function clearChat() {
+  iaMessages = [];
+  const messagesEl = document.getElementById('ia-messages');
+  messagesEl.innerHTML = `
+    <div class="ia-welcome" id="ia-welcome">
+      <div class="ia-welcome-glow">✦</div>
+      <div class="ia-welcome-title">Assistente de conteúdo Marvee</div>
+      <div class="ia-welcome-sub">Crie roteiros, pautas, e-mails, análises e estratégias de conteúdo com IA especializada na Marvee.</div>
+      <div class="ia-chips">
+        <button class="ia-chip" onclick="useChip('Crie um roteiro de Reels de 60s sobre gestão de caixa para PMEs. Gancho forte nos primeiros 3 segundos.')">🎬 Roteiro Reels</button>
+        <button class="ia-chip" onclick="useChip('Escreva um post de LinkedIn com storytelling sobre um erro financeiro comum de empresários.')">💼 Post LinkedIn</button>
+        <button class="ia-chip" onclick="useChip('Crie um e-mail reflexão sobre a diferença entre faturamento alto e lucro real. Método PAS, máximo 300 palavras.')">📧 E-mail reflexão</button>
+        <button class="ia-chip" onclick="useChip('Sugira 10 temas de alto impacto para conteúdo financeiro para PMEs no próximo mês.')">🎯 Temas do mês</button>
+        <button class="ia-chip" onclick="useChip('Crie um roteiro completo de vídeo YouTube de 8-10 minutos sobre como estruturar o financeiro da empresa do zero.')">🎥 Roteiro YouTube</button>
+        <button class="ia-chip" onclick="useChip('Monte um calendário editorial completo para 1 semana: 2 Reels, 2 Posts, 1 LinkedIn, 3 E-mails e 1 YouTube.')">📅 Calendário semanal</button>
+      </div>
+    </div>`;
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 160) + 'px';
+}
+
+async function sendMessage() {
+  if (iaLoading) return;
+  const input = document.getElementById('ia-input');
+  const text = input.value.trim();
+  if (!text) return;
+
+  const canal = document.getElementById('ia-canal-context').value;
+  const messagesEl = document.getElementById('ia-messages');
+
+  // Remove welcome
+  const welcome = messagesEl.querySelector('.ia-welcome');
+  if (welcome) welcome.remove();
+
+  // Build message with context
+  let fullText = text;
+  if (canal) fullText = `[Canal: ${canal}]\n${text}`;
+  if (iaMode) fullText = `[Modo: ${iaMode.toUpperCase()}]\n${fullText}`;
+
+  iaMessages.push({ role: 'user', content: fullText });
+
+  messagesEl.innerHTML += `
+    <div class="ia-message user">
+      <div class="ia-avatar user">Eu</div>
+      <div class="ia-bubble">${text}${canal||iaMode ? `<br><span style="font-size:10px;opacity:0.5;margin-top:4px;display:block">${[canal,iaMode?'modo: '+iaMode:''].filter(Boolean).join(' · ')}</span>` : ''}</div>
+    </div>`;
+
+  input.value = '';
+  input.style.height = 'auto';
+  updateSendBtn();
+  iaLoading = true;
+  document.getElementById('ia-send-btn').disabled = true;
+
+  const typingId = 'typing-' + Date.now();
+  messagesEl.innerHTML += `
+    <div class="ia-message assistant" id="${typingId}">
+      <div class="ia-avatar assistant">AI</div>
+      <div class="ia-typing"><span></span><span></span><span></span></div>
+    </div>`;
+  messagesEl.scrollTop = messagesEl.scrollHeight;
+
+  // Build system prompt
+  let systemPrompt = `Você é um assistente especialista em marketing de conteúdo digital para finanças empresariais e BPO financeiro. Você ajuda a criar conteúdo para os canais da Marvee (Instagram, LinkedIn, YouTube, E-mail). A Marvee é uma fintech que simplifica o universo financeiro das empresas — confiável, ousada e simples. Responda sempre em português brasileiro, de forma clara e objetiva.`;
+  if (iaMode && modePrompts[iaMode]) systemPrompt += '\n\n' + modePrompts[iaMode];
+
+  try {
+    const response = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: iaMessages, system: systemPrompt })
+    });
+
+    const data = await response.json();
+    const reply = data.content?.[0]?.text || 'Erro ao processar resposta.';
+
+    document.getElementById(typingId)?.remove();
+    iaMessages.push({ role: 'assistant', content: reply });
+
+    const formatted = reply
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+      .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
+      .replace(/\*(.*?)\*/g,'<em>$1</em>')
+      .replace(/\n/g,'<br>');
+
+    messagesEl.innerHTML += `
+      <div class="ia-message assistant">
+        <div class="ia-avatar assistant">AI</div>
+        <div class="ia-bubble">${formatted}</div>
+      </div>`;
+
+  } catch (err) {
+    document.getElementById(typingId)?.remove();
+    messagesEl.innerHTML += `
+      <div class="ia-message assistant">
+        <div class="ia-avatar assistant">AI</div>
+        <div class="ia-bubble" style="color:#DC2626;background:rgba(239,68,68,0.06)">⚠️ Erro de conexão com a IA. Verifique se o backend Vercel está configurado.</div>
+      </div>`;
+  }
+
+  iaLoading = false;
+  document.getElementById('ia-send-btn').disabled = false;
+  messagesEl.scrollTop = messagesEl.scrollHeight;
 }
 
 // =====================
