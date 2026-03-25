@@ -913,6 +913,151 @@
 
   .replicate-toast.visible { opacity: 1; pointer-events: auto; }
   .replicate-toast button { background: var(--teal); border: none; color: var(--navy); padding: 5px 12px; border-radius: 6px; font-family: 'Palanquin', Arial, sans-serif; font-size: 12px; font-weight: 700; cursor: pointer; }
+
+  /* DATE PICKER POPOVER */
+  .date-popover {
+    position: fixed;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 8px 32px rgba(11,19,43,0.15);
+    z-index: 400;
+    display: none;
+    width: 280px;
+  }
+
+  .date-popover.open { display: block; }
+
+  .dp-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  .dp-month-label {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--navy);
+  }
+
+  .dp-nav-btn {
+    width: 26px; height: 26px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 14px;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .dp-nav-btn:hover { border-color: var(--teal); color: var(--teal); }
+
+  .dp-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    margin-bottom: 4px;
+  }
+
+  .dp-wd {
+    text-align: center;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    padding: 4px 0;
+  }
+
+  .dp-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+  }
+
+  .dp-day {
+    text-align: center;
+    padding: 6px 2px;
+    font-size: 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.12s;
+    color: var(--text);
+  }
+
+  .dp-day:hover { background: var(--teal-light); color: var(--teal); }
+  .dp-day.selected { background: var(--teal); color: white; font-weight: 700; }
+  .dp-day.today { font-weight: 700; color: var(--teal); }
+  .dp-day.other-month { color: var(--text-light); }
+  .dp-day.empty { cursor: default; }
+
+  /* RESCHEDULE MODAL */
+  .reschedule-tabs {
+    display: flex;
+    gap: 4px;
+    background: var(--bg);
+    border-radius: 8px;
+    padding: 3px;
+    margin-bottom: 16px;
+  }
+
+  .reschedule-tab {
+    flex: 1;
+    padding: 7px;
+    border-radius: 6px;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    font-family: 'Palanquin', Arial, sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+  }
+
+  .reschedule-tab.active {
+    background: var(--surface);
+    color: var(--navy);
+    box-shadow: 0 1px 3px rgba(11,19,43,0.1);
+  }
+
+  .reschedule-panel { display: none; }
+  .reschedule-panel.active { display: block; }
+
+  .days-input-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .days-input {
+    width: 80px;
+    padding: 8px 10px;
+    background: var(--bg);
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'Palanquin', Arial, sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    text-align: center;
+    outline: none;
+  }
+
+  .days-input:focus { border-color: var(--teal); }
+
+  .preview-box {
+    background: var(--bg);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 10px;
+    line-height: 1.6;
+  }
 </style>
 </head>
 <body>
@@ -1040,6 +1185,7 @@
     <button class="btn-sm" style="background:rgba(245,158,11,0.15);color:var(--amber)" onclick="bulkStatus('Em processo')">Em processo</button>
     <button class="btn-sm" style="background:rgba(34,197,94,0.15);color:var(--green)" onclick="bulkStatus('Finalizado')">Finalizado</button>
     <button class="btn-sm" style="background:rgba(148,163,184,0.15);color:var(--gray)" onclick="bulkStatus('Não iniciado')">Não iniciado</button>
+    <button class="btn-sm" style="background:rgba(91,192,190,0.15);color:var(--teal)" onclick="openReschedule()">📅 Reprogramar</button>
     <button class="btn-sm btn-sm-ghost" style="margin-left:auto" onclick="clearSelection()">Cancelar</button>
   </div>
 
@@ -1081,6 +1227,67 @@
       </thead>
       <tbody id="dados-tbody"></tbody>
     </table>
+  </div>
+</div>
+
+<!-- DATE POPOVER -->
+<div class="date-popover" id="date-popover">
+  <div class="dp-header">
+    <button class="dp-nav-btn" onclick="dpPrev()">‹</button>
+    <div class="dp-month-label" id="dp-month-label"></div>
+    <button class="dp-nav-btn" onclick="dpNext()">›</button>
+  </div>
+  <div class="dp-weekdays">
+    <div class="dp-wd">D</div><div class="dp-wd">S</div><div class="dp-wd">T</div>
+    <div class="dp-wd">Q</div><div class="dp-wd">Q</div><div class="dp-wd">S</div>
+    <div class="dp-wd">S</div>
+  </div>
+  <div class="dp-days" id="dp-days"></div>
+</div>
+
+<!-- RESCHEDULE MODAL -->
+<div class="modal-overlay" id="modal-reschedule">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Reprogramar datas</div>
+      <button class="modal-close" onclick="closeModal('modal-reschedule')">✕</button>
+    </div>
+    <div style="font-size:13px;color:var(--text-muted);margin-bottom:16px">
+      <span id="reschedule-count-label"></span>
+    </div>
+
+    <div class="reschedule-tabs">
+      <button class="reschedule-tab active" onclick="switchRescheduleTab('deslocar', this)">Deslocar X dias</button>
+      <button class="reschedule-tab" onclick="switchRescheduleTab('redistribuir', this)">Nova data de início</button>
+    </div>
+
+    <!-- PANEL: DESLOCAR -->
+    <div class="reschedule-panel active" id="panel-deslocar">
+      <div class="form-label" style="margin-bottom:8px">Quantos dias deslocar?</div>
+      <div class="days-input-row">
+        <button class="dp-nav-btn" onclick="adjustDays(-1)" style="width:32px;height:32px;font-size:18px">−</button>
+        <input class="days-input" type="number" id="days-offset" value="7" oninput="updateDeslocarPreview()">
+        <button class="dp-nav-btn" onclick="adjustDays(1)" style="width:32px;height:32px;font-size:18px">+</button>
+        <span style="font-size:13px;color:var(--text-muted)">dias</span>
+        <div style="display:flex;gap:6px;margin-left:auto">
+          <button class="btn-sm" style="background:var(--teal-light);color:var(--teal);font-size:12px" onclick="setDaysSign(1)">Para frente ▶</button>
+          <button class="btn-sm" style="background:rgba(239,68,68,0.1);color:#DC2626;font-size:12px" onclick="setDaysSign(-1)">◀ Para trás</button>
+        </div>
+      </div>
+      <div class="preview-box" id="preview-deslocar">Selecione os dias para ver o preview.</div>
+    </div>
+
+    <!-- PANEL: REDISTRIBUIR -->
+    <div class="reschedule-panel" id="panel-redistribuir">
+      <div class="form-label" style="margin-bottom:8px">Nova data de início</div>
+      <input type="date" class="form-input" id="new-start-date" oninput="updateRedistribuirPreview()">
+      <div class="preview-box" id="preview-redistribuir" style="margin-top:10px">Selecione uma data para ver o preview.</div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-sm btn-sm-ghost" onclick="closeModal('modal-reschedule')">Cancelar</button>
+      <button class="btn-sm btn-sm-primary" onclick="applyReschedule()">Aplicar</button>
+    </div>
   </div>
 </div>
 
@@ -1530,6 +1737,172 @@ function updateStatus(id,newStatus,sel) {
 }
 
 // =====================
+// DATE PICKER
+// =====================
+let dpYear = new Date().getFullYear();
+let dpMonth = new Date().getMonth();
+let dpTargetId = null;
+let dpSelectedKey = null;
+
+function openDatePicker(id, currentKey, anchorEl) {
+  dpTargetId = id;
+  dpSelectedKey = currentKey;
+  const [y,m] = currentKey.split('-');
+  dpYear = +y; dpMonth = +m - 1;
+  renderDatePicker();
+  const popover = document.getElementById('date-popover');
+  popover.classList.add('open');
+  const rect = anchorEl.getBoundingClientRect();
+  popover.style.top = (rect.bottom + window.scrollY + 6) + 'px';
+  popover.style.left = Math.min(rect.left, window.innerWidth - 290) + 'px';
+
+  setTimeout(() => {
+    document.addEventListener('click', closeDatePickerOutside, { once: true });
+  }, 10);
+}
+
+function closeDatePickerOutside(e) {
+  const popover = document.getElementById('date-popover');
+  if (!popover.contains(e.target)) popover.classList.remove('open');
+  else document.addEventListener('click', closeDatePickerOutside, { once: true });
+}
+
+function dpPrev() { dpMonth--; if(dpMonth<0){dpMonth=11;dpYear--;} renderDatePicker(); }
+function dpNext() { dpMonth++; if(dpMonth>11){dpMonth=0;dpYear++;} renderDatePicker(); }
+
+function renderDatePicker() {
+  document.getElementById('dp-month-label').textContent = `${MONTHS[dpMonth]} ${dpYear}`;
+  const today = fmtKey(new Date());
+  const firstDay = new Date(dpYear, dpMonth, 1);
+  const lastDay = new Date(dpYear, dpMonth+1, 0);
+  const days = [];
+  for(let i=0;i<firstDay.getDay();i++) days.push({empty:true});
+  for(let i=1;i<=lastDay.getDate();i++) {
+    const d = new Date(dpYear, dpMonth, i);
+    const key = fmtKey(d);
+    days.push({ day: i, key, isToday: key===today, isSelected: key===dpSelectedKey });
+  }
+  document.getElementById('dp-days').innerHTML = days.map(d => {
+    if(d.empty) return '<div class="dp-day empty"></div>';
+    return `<div class="dp-day ${d.isSelected?'selected':''} ${d.isToday?'today':''}"
+      onclick="selectDate('${d.key}')">${d.day}</div>`;
+  }).join('');
+}
+
+function selectDate(key) {
+  if(!dpTargetId) return;
+  const idx = data.findIndex(d => d.id === dpTargetId);
+  if(idx !== -1) { data[idx].dateKey = key; save(); }
+  dpSelectedKey = key;
+  renderDatePicker();
+  document.getElementById('date-popover').classList.remove('open');
+  renderDados(); renderCalendar(); renderDashboard();
+}
+
+// =====================
+// RESCHEDULE
+// =====================
+let rescheduleSign = 1;
+let rescheduleTab = 'deslocar';
+
+function openReschedule() {
+  const count = selectedIds.size;
+  if(!count) return;
+  document.getElementById('reschedule-count-label').textContent = `${count} item(s) selecionado(s) serão reprogramados.`;
+  document.getElementById('days-offset').value = 7;
+  rescheduleSign = 1;
+  document.getElementById('new-start-date').value = '';
+  updateDeslocarPreview();
+  document.getElementById('modal-reschedule').classList.add('open');
+}
+
+function switchRescheduleTab(tab, btn) {
+  rescheduleTab = tab;
+  document.querySelectorAll('.reschedule-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.reschedule-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('panel-' + tab).classList.add('active');
+}
+
+function adjustDays(delta) {
+  const inp = document.getElementById('days-offset');
+  inp.value = Math.max(1, (+inp.value || 0) + delta);
+  updateDeslocarPreview();
+}
+
+function setDaysSign(sign) {
+  rescheduleSign = sign;
+  updateDeslocarPreview();
+}
+
+function updateDeslocarPreview() {
+  const days = (+document.getElementById('days-offset').value || 0) * rescheduleSign;
+  const selectedItems = data.filter(d => selectedIds.has(d.id)).sort((a,b)=>a.dateKey.localeCompare(b.dateKey));
+  if(!selectedItems.length) return;
+  const preview = document.getElementById('preview-deslocar');
+  const examples = selectedItems.slice(0,3).map(item => {
+    const d = parseDate(item.dateKey);
+    d.setDate(d.getDate() + days);
+    const newKey = fmtKey(d);
+    return `${fmtDisplay(item.dateKey)} → <strong style="color:var(--teal)">${fmtDisplay(newKey)}</strong>`;
+  });
+  const dir = days >= 0 ? `+${days}` : `${days}`;
+  preview.innerHTML = `<strong>${dir} dias</strong> aplicado a todos:<br>${examples.join('<br>')}${selectedItems.length>3?`<br>...e mais ${selectedItems.length-3} item(s)`:''}`;
+}
+
+function updateRedistribuirPreview() {
+  const newStart = document.getElementById('new-start-date').value;
+  if(!newStart) return;
+  const selectedItems = data.filter(d => selectedIds.has(d.id)).sort((a,b)=>a.dateKey.localeCompare(b.dateKey));
+  if(!selectedItems.length) return;
+  const firstDate = parseDate(selectedItems[0].dateKey);
+  const startDate = parseDate(newStart);
+  const diff = Math.round((startDate - firstDate) / (1000*60*60*24));
+  const examples = selectedItems.slice(0,3).map(item => {
+    const d = parseDate(item.dateKey);
+    d.setDate(d.getDate() + diff);
+    return `${fmtDisplay(item.dateKey)} → <strong style="color:var(--teal)">${fmtDisplay(fmtKey(d))}</strong>`;
+  });
+  document.getElementById('preview-redistribuir').innerHTML =
+    `Intervalos mantidos, início em <strong>${fmtDisplay(newStart)}</strong>:<br>${examples.join('<br>')}${selectedItems.length>3?`<br>...e mais ${selectedItems.length-3} item(s)`:''}`;
+}
+
+function applyReschedule() {
+  const selectedItems = data.filter(d => selectedIds.has(d.id)).sort((a,b)=>a.dateKey.localeCompare(b.dateKey));
+
+  if(rescheduleTab === 'deslocar') {
+    const days = (+document.getElementById('days-offset').value || 0) * rescheduleSign;
+    selectedItems.forEach(item => {
+      const idx = data.findIndex(d => d.id === item.id);
+      if(idx !== -1) {
+        const d = parseDate(item.dateKey);
+        d.setDate(d.getDate() + days);
+        data[idx].dateKey = fmtKey(d);
+      }
+    });
+  } else {
+    const newStart = document.getElementById('new-start-date').value;
+    if(!newStart) { alert('Selecione uma data de início.'); return; }
+    const firstDate = parseDate(selectedItems[0].dateKey);
+    const startDate = parseDate(newStart);
+    const diff = Math.round((startDate - firstDate) / (1000*60*60*24));
+    selectedItems.forEach(item => {
+      const idx = data.findIndex(d => d.id === item.id);
+      if(idx !== -1) {
+        const d = parseDate(item.dateKey);
+        d.setDate(d.getDate() + diff);
+        data[idx].dateKey = fmtKey(d);
+      }
+    });
+  }
+
+  save();
+  closeModal('modal-reschedule');
+  clearSelection();
+  renderDados(); renderCalendar(); renderDashboard();
+}
+
+// =====================
 // DADOS PAGE
 // =====================
 let sortField = 'dateKey';
@@ -1576,7 +1949,7 @@ function renderDados() {
 
     return `<tr class="${isSelected?'selected':''}" data-id="${item.id}">
       <td><input type="checkbox" ${isSelected?'checked':''} onchange="toggleCheck(${item.id}, this)"></td>
-      <td><span class="cell-date">${d}/${m}/${y}</span></td>
+      <td><span class="cell-date" style="cursor:pointer" onclick="openDatePicker(${item.id},'${item.dateKey}',this)">${d}/${m}/${y} ✎</span></td>
       <td>
         <select class="cell-tipo-select ${tc}" onchange="updateTipo(${item.id}, this.value, this)">
           <option value="Reels" ${item.tipo==='Reels'?'selected':''}>Reels</option>
