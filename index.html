@@ -688,6 +688,231 @@
   ::-webkit-scrollbar { width: 5px; height: 5px; }
   ::-webkit-scrollbar-track { background: var(--bg); }
   ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  /* DADOS PAGE */
+  .dados-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+
+  .dados-search {
+    flex: 1;
+    min-width: 200px;
+    padding: 8px 12px;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'Palanquin', Arial, sans-serif;
+    font-size: 13px;
+    outline: none;
+  }
+
+  .dados-search:focus { border-color: var(--teal); }
+
+  .dados-filter-select {
+    padding: 8px 12px;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'Palanquin', Arial, sans-serif;
+    font-size: 13px;
+    outline: none;
+    cursor: pointer;
+  }
+
+  .dados-filter-select:focus { border-color: var(--teal); }
+
+  .dados-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+  }
+
+  .dados-count {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+
+  /* TABLE */
+  .table-wrapper {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(11,19,43,0.06);
+  }
+
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .data-table thead {
+    background: var(--navy);
+    position: sticky;
+    top: 56px;
+    z-index: 10;
+  }
+
+  .data-table th {
+    padding: 11px 14px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.6);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+    transition: color 0.15s;
+  }
+
+  .data-table th:hover { color: white; }
+  .data-table th.sorted { color: var(--teal); }
+  .data-table th .sort-icon { margin-left: 4px; opacity: 0.5; font-size: 10px; }
+  .data-table th.sorted .sort-icon { opacity: 1; }
+
+  .data-table th:first-child { width: 40px; text-align: center; }
+
+  .data-table tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.12s;
+  }
+
+  .data-table tbody tr:last-child { border-bottom: none; }
+  .data-table tbody tr:hover { background: #F8FAFC; }
+  .data-table tbody tr.selected { background: rgba(91,192,190,0.06); }
+
+  .data-table td {
+    padding: 10px 14px;
+    font-size: 13px;
+    color: var(--text);
+    vertical-align: middle;
+  }
+
+  .data-table td:first-child { text-align: center; }
+
+  .data-table input[type="checkbox"] {
+    width: 15px;
+    height: 15px;
+    cursor: pointer;
+    accent-color: var(--teal);
+  }
+
+  /* INLINE EDIT */
+  .cell-edit {
+    background: transparent;
+    border: none;
+    font-family: 'Palanquin', Arial, sans-serif;
+    font-size: 13px;
+    color: var(--text);
+    width: 100%;
+    padding: 2px 4px;
+    border-radius: 4px;
+    outline: none;
+    cursor: pointer;
+  }
+
+  .cell-edit:focus {
+    background: white;
+    border: 1.5px solid var(--teal);
+    cursor: text;
+    padding: 2px 6px;
+  }
+
+  .cell-date {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--independence);
+    background: rgba(58,80,107,0.08);
+    padding: 3px 8px;
+    border-radius: 5px;
+    display: inline-block;
+  }
+
+  .cell-status-select {
+    border: none;
+    font-family: 'Palanquin', Arial, sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    outline: none;
+    padding: 3px 8px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+
+  .cell-status-select.finalizado { color: var(--green); background: rgba(34,197,94,0.1); }
+  .cell-status-select.em-processo { color: var(--amber); background: rgba(245,158,11,0.1); }
+  .cell-status-select.nao-iniciado { color: var(--gray); background: rgba(148,163,184,0.15); }
+
+  .cell-tipo-select {
+    border: none;
+    font-family: 'Palanquin', Arial, sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    outline: none;
+    padding: 3px 8px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+
+  .cell-tipo-select.tipo-reels { color: var(--reels); background: rgba(255,107,53,0.1); }
+  .cell-tipo-select.tipo-post { color: var(--post); background: rgba(124,58,237,0.1); }
+  .cell-tipo-select.tipo-email { color: var(--email); background: rgba(28,37,65,0.1); }
+  .cell-tipo-select.tipo-linkedin { color: var(--linkedin); background: rgba(0,119,181,0.1); }
+  .cell-tipo-select.tipo-youtube { color: var(--youtube); background: rgba(255,0,0,0.1); }
+
+  .bulk-bar {
+    display: none;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    background: var(--navy);
+    border-radius: 10px;
+    margin-bottom: 12px;
+    color: white;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .bulk-bar.visible { display: flex; }
+  .bulk-bar-count { font-weight: 700; color: var(--teal); }
+
+  /* REPLICATE TOAST */
+  .replicate-toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--navy);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 300;
+    box-shadow: 0 8px 24px rgba(11,19,43,0.2);
+    transition: all 0.3s;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .replicate-toast.visible { opacity: 1; pointer-events: auto; }
+  .replicate-toast button { background: var(--teal); border: none; color: var(--navy); padding: 5px 12px; border-radius: 6px; font-family: 'Palanquin', Arial, sans-serif; font-size: 12px; font-weight: 700; cursor: pointer; }
 </style>
 </head>
 <body>
@@ -699,6 +924,7 @@
   <div class="nav-tabs">
     <button class="nav-tab active" onclick="showPage('dashboard', this)">Dashboard</button>
     <button class="nav-tab" onclick="showPage('calendario', this)">Calendário</button>
+    <button class="nav-tab" onclick="showPage('dados', this)">Dados</button>
   </div>
   <div class="nav-actions">
     <button class="btn btn-ghost" onclick="openImport()">↑ Importar CSV</button>
@@ -796,6 +1022,73 @@
     </div>
     <div id="cal-weeks"></div>
   </div>
+</div>
+
+<!-- DADOS PAGE -->
+<div id="page-dados" class="page">
+  <div class="page-header">
+    <div>
+      <div class="page-title">Dados</div>
+      <div class="page-sub">Edite, filtre e gerencie todos os conteúdos</div>
+    </div>
+  </div>
+
+  <!-- BULK BAR -->
+  <div class="bulk-bar" id="bulk-bar">
+    <span><span class="bulk-bar-count" id="bulk-count">0</span> selecionados</span>
+    <button class="btn-sm btn-sm-danger" onclick="bulkDelete()">🗑 Excluir selecionados</button>
+    <button class="btn-sm" style="background:rgba(245,158,11,0.15);color:var(--amber)" onclick="bulkStatus('Em processo')">Em processo</button>
+    <button class="btn-sm" style="background:rgba(34,197,94,0.15);color:var(--green)" onclick="bulkStatus('Finalizado')">Finalizado</button>
+    <button class="btn-sm" style="background:rgba(148,163,184,0.15);color:var(--gray)" onclick="bulkStatus('Não iniciado')">Não iniciado</button>
+    <button class="btn-sm btn-sm-ghost" style="margin-left:auto" onclick="clearSelection()">Cancelar</button>
+  </div>
+
+  <!-- TOOLBAR -->
+  <div class="dados-toolbar">
+    <input class="dados-search" type="text" placeholder="🔍  Buscar por conteúdo..." id="dados-search" oninput="renderDados()">
+    <select class="dados-filter-select" id="dados-filter-canal" onchange="renderDados()">
+      <option value="">Todos os canais</option>
+      <option value="Reels">Reels</option>
+      <option value="Post">Post</option>
+      <option value="Email">E-mail</option>
+      <option value="LinkedIn">LinkedIn</option>
+      <option value="YouTube">YouTube</option>
+    </select>
+    <select class="dados-filter-select" id="dados-filter-status" onchange="renderDados()">
+      <option value="">Todos os status</option>
+      <option value="Não iniciado">Não iniciado</option>
+      <option value="Em processo">Em processo</option>
+      <option value="Finalizado">Finalizado</option>
+    </select>
+    <div class="dados-actions">
+      <span class="dados-count" id="dados-count">0 itens</span>
+      <button class="btn-sm btn-sm-primary" onclick="openAddModal()">+ Novo</button>
+    </div>
+  </div>
+
+  <!-- TABLE -->
+  <div class="table-wrapper">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th><input type="checkbox" id="check-all" onchange="toggleAllCheck(this)"></th>
+          <th onclick="sortDados('dateKey')">Data <span class="sort-icon" id="sort-dateKey">↕</span></th>
+          <th onclick="sortDados('tipo')">Canal <span class="sort-icon" id="sort-tipo">↕</span></th>
+          <th>Conteúdo</th>
+          <th onclick="sortDados('status')">Status <span class="sort-icon" id="sort-status">↕</span></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="dados-tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- REPLICATE TOAST -->
+<div class="replicate-toast" id="replicate-toast">
+  <span id="replicate-msg"></span>
+  <button onclick="confirmReplicate()">Replicar para todos</button>
+  <button onclick="dismissReplicate()" style="background:rgba(255,255,255,0.1);color:white">Ignorar</button>
 </div>
 
 <!-- IMPORT MODAL -->
@@ -933,6 +1226,7 @@ function showPage(page, btn) {
   if(btn) btn.classList.add('active');
   if(page==='dashboard') renderDashboard();
   if(page==='calendario') renderCalendar();
+  if(page==='dados') renderDados();
 }
 
 // =====================
@@ -1235,6 +1529,202 @@ function updateStatus(id,newStatus,sel) {
   renderCalendar(); renderDashboard();
 }
 
+// =====================
+// DADOS PAGE
+// =====================
+let sortField = 'dateKey';
+let sortDir = 'asc';
+let selectedIds = new Set();
+let lastChangedItem = null;
+let replicateToastTimer = null;
+
+function renderDados() {
+  const search = document.getElementById('dados-search').value.toLowerCase();
+  const filterCanal = document.getElementById('dados-filter-canal').value;
+  const filterStatus = document.getElementById('dados-filter-status').value;
+
+  const canalMap = {'Email':'E-mail','E-mail':'E-mail','Reels':'Reels','Post':'Post','LinkedIn':'LinkedIn','YouTube':'YouTube','Youtube':'YouTube'};
+
+  let filtered = data.filter(item => {
+    const tl = TIPO_LABEL[item.tipo] || item.tipo;
+    if (filterCanal && canalMap[filterCanal] !== tl && filterCanal !== item.tipo) return false;
+    if (filterStatus && item.status !== filterStatus) return false;
+    if (search && !item.conteudo.toLowerCase().includes(search) && !tl.toLowerCase().includes(search)) return false;
+    return true;
+  });
+
+  filtered.sort((a, b) => {
+    let va = a[sortField] || '', vb = b[sortField] || '';
+    if (sortDir === 'desc') [va, vb] = [vb, va];
+    return va.localeCompare(vb);
+  });
+
+  document.getElementById('dados-count').textContent = `${filtered.length} itens`;
+
+  const tbody = document.getElementById('dados-tbody');
+  if (!filtered.length) {
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--text-muted)">Nenhum item encontrado.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = filtered.map(item => {
+    const tl = TIPO_LABEL[item.tipo] || item.tipo;
+    const tc = TIPO_CLASS[item.tipo] || 'tipo-email';
+    const sc = item.status.toLowerCase().replace(' ','-').replace('ã','a').replace('ç','c');
+    const [y,m,d] = item.dateKey.split('-');
+    const isSelected = selectedIds.has(item.id);
+
+    return `<tr class="${isSelected?'selected':''}" data-id="${item.id}">
+      <td><input type="checkbox" ${isSelected?'checked':''} onchange="toggleCheck(${item.id}, this)"></td>
+      <td><span class="cell-date">${d}/${m}/${y}</span></td>
+      <td>
+        <select class="cell-tipo-select ${tc}" onchange="updateTipo(${item.id}, this.value, this)">
+          <option value="Reels" ${item.tipo==='Reels'?'selected':''}>Reels</option>
+          <option value="Post" ${item.tipo==='Post'?'selected':''}>Post</option>
+          <option value="Email" ${item.tipo==='Email'||item.tipo==='E-mail'?'selected':''}>E-mail</option>
+          <option value="LinkedIn" ${item.tipo==='LinkedIn'?'selected':''}>LinkedIn</option>
+          <option value="YouTube" ${item.tipo==='YouTube'||item.tipo==='Youtube'?'selected':''}>YouTube</option>
+        </select>
+      </td>
+      <td>
+        <input class="cell-edit" value="${(item.conteudo||'').replace(/"/g,'&quot;')}"
+          onblur="updateConteudo(${item.id}, this.value)"
+          onkeydown="if(event.key==='Enter'){this.blur()}"
+          placeholder="Sem título">
+      </td>
+      <td>
+        <select class="cell-status-select ${sc}" onchange="updateStatusDados(${item.id}, this.value, this)">
+          <option value="Não iniciado" ${item.status==='Não iniciado'?'selected':''}>Não iniciado</option>
+          <option value="Em processo" ${item.status==='Em processo'?'selected':''}>Em processo</option>
+          <option value="Finalizado" ${item.status==='Finalizado'?'selected':''}>Finalizado</option>
+        </select>
+      </td>
+      <td>
+        <button class="btn-sm btn-sm-danger" style="padding:4px 8px;font-size:11px" onclick="deleteSingle(${item.id})">✕</button>
+      </td>
+    </tr>`;
+  }).join('');
+
+  // Update sort icons
+  ['dateKey','tipo','status'].forEach(f => {
+    const el = document.getElementById('sort-'+f);
+    if (el) el.textContent = sortField===f ? (sortDir==='asc'?'↑':'↓') : '↕';
+    const th = el?.closest('th');
+    if (th) th.classList.toggle('sorted', sortField===f);
+  });
+}
+
+function sortDados(field) {
+  if (sortField === field) sortDir = sortDir==='asc'?'desc':'asc';
+  else { sortField=field; sortDir='asc'; }
+  renderDados();
+}
+
+function toggleCheck(id, cb) {
+  if (cb.checked) selectedIds.add(id);
+  else selectedIds.delete(id);
+  updateBulkBar();
+  const row = cb.closest('tr');
+  row.classList.toggle('selected', cb.checked);
+}
+
+function toggleAllCheck(cb) {
+  const checkboxes = document.querySelectorAll('#dados-tbody input[type="checkbox"]');
+  checkboxes.forEach(c => {
+    const id = +c.closest('tr').dataset.id;
+    if (cb.checked) selectedIds.add(id);
+    else selectedIds.delete(id);
+    c.checked = cb.checked;
+    c.closest('tr').classList.toggle('selected', cb.checked);
+  });
+  updateBulkBar();
+}
+
+function updateBulkBar() {
+  const bar = document.getElementById('bulk-bar');
+  document.getElementById('bulk-count').textContent = selectedIds.size;
+  bar.classList.toggle('visible', selectedIds.size > 0);
+}
+
+function clearSelection() {
+  selectedIds.clear();
+  updateBulkBar();
+  renderDados();
+  document.getElementById('check-all').checked = false;
+}
+
+function bulkDelete() {
+  if (!confirm(`Excluir ${selectedIds.size} itens?`)) return;
+  data = data.filter(d => !selectedIds.has(d.id));
+  save(); selectedIds.clear(); updateBulkBar();
+  renderDados(); renderDashboard(); renderCalendar();
+}
+
+function bulkStatus(newStatus) {
+  data.forEach(d => { if (selectedIds.has(d.id)) d.status = newStatus; });
+  save(); selectedIds.clear(); updateBulkBar();
+  renderDados(); renderDashboard(); renderCalendar();
+}
+
+function deleteSingle(id) {
+  data = data.filter(d => d.id !== id);
+  save(); renderDados(); renderDashboard(); renderCalendar();
+}
+
+function updateConteudo(id, val) {
+  const idx = data.findIndex(d => d.id === id);
+  if (idx !== -1) { data[idx].conteudo = val; save(); renderDashboard(); }
+}
+
+function updateTipo(id, val, sel) {
+  const idx = data.findIndex(d => d.id === id);
+  if (idx !== -1) { data[idx].tipo = val; save(); }
+  const tc = TIPO_CLASS[val] || 'tipo-email';
+  sel.className = `cell-tipo-select ${tc}`;
+  renderDashboard(); renderCalendar();
+}
+
+function updateStatusDados(id, newStatus, sel) {
+  const idx = data.findIndex(d => d.id === id);
+  if (idx === -1) return;
+  const oldConteudo = data[idx].conteudo;
+  data[idx].status = newStatus;
+  save();
+  const sc = newStatus.toLowerCase().replace(' ','-').replace('ã','a').replace('ç','c');
+  sel.className = `cell-status-select ${sc}`;
+  renderDashboard(); renderCalendar();
+
+  // Check for duplicates with same content to offer replication
+  const similar = data.filter(d => d.id !== id && d.conteudo && d.conteudo === oldConteudo && d.status !== newStatus);
+  if (similar.length > 0) {
+    lastChangedItem = { conteudo: oldConteudo, newStatus, count: similar.length };
+    showReplicateToast(oldConteudo, similar.length, newStatus);
+  }
+}
+
+function showReplicateToast(conteudo, count, status) {
+  const toast = document.getElementById('replicate-toast');
+  const msg = document.getElementById('replicate-msg');
+  msg.textContent = `Replicar "${status}" para outros ${count} item(s) com mesmo conteúdo?`;
+  toast.classList.add('visible');
+  if (replicateToastTimer) clearTimeout(replicateToastTimer);
+  replicateToastTimer = setTimeout(dismissReplicate, 8000);
+}
+
+function confirmReplicate() {
+  if (!lastChangedItem) return;
+  data.forEach(d => {
+    if (d.conteudo === lastChangedItem.conteudo) d.status = lastChangedItem.newStatus;
+  });
+  save(); dismissReplicate(); renderDados(); renderDashboard(); renderCalendar();
+}
+
+function dismissReplicate() {
+  document.getElementById('replicate-toast').classList.remove('visible');
+  lastChangedItem = null;
+}
+
+// =====================
 // INIT
 renderDashboard();
 renderCalendar();
