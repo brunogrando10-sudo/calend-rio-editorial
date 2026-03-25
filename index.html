@@ -1,0 +1,1405 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plano de Marketing</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0f13;
+    --surface: #16161d;
+    --surface2: #1e1e28;
+    --border: #2a2a38;
+    --text: #e8e8f0;
+    --text-muted: #6b6b88;
+    --email: #4a9eff;
+    --linkedin: #4a9eff;
+    --youtube: #ff4444;
+    --reels: #ff9500;
+    --post: #a855f7;
+    --finalizado: #22c55e;
+    --em-processo: #f59e0b;
+    --nao-iniciado: #6b6b88;
+    --past: #1a1a22;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* NAV */
+  nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    height: 60px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .nav-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 18px;
+    letter-spacing: -0.5px;
+    background: linear-gradient(135deg, #4a9eff, #a855f7);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .nav-tabs {
+    display: flex;
+    gap: 4px;
+  }
+
+  .nav-tab {
+    padding: 6px 18px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s;
+    background: transparent;
+    color: var(--text-muted);
+  }
+
+  .nav-tab.active {
+    background: var(--surface2);
+    color: var(--text);
+  }
+
+  .nav-tab:hover:not(.active) {
+    color: var(--text);
+  }
+
+  .nav-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .btn {
+    padding: 7px 16px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+  }
+
+  .btn-ghost:hover { color: var(--text); border-color: var(--text-muted); }
+
+  .btn-primary {
+    background: linear-gradient(135deg, #4a9eff, #a855f7);
+    color: white;
+  }
+
+  .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+
+  /* PAGES */
+  .page { display: none; padding: 32px; }
+  .page.active { display: block; }
+
+  /* DASHBOARD */
+  .dash-header {
+    margin-bottom: 32px;
+  }
+
+  .dash-header h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 4px;
+  }
+
+  .dash-header p {
+    color: var(--text-muted);
+    font-size: 14px;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+  }
+
+  .stat-card.blue::before { background: var(--email); }
+  .stat-card.green::before { background: var(--finalizado); }
+  .stat-card.orange::before { background: var(--em-processo); }
+  .stat-card.purple::before { background: var(--post); }
+
+  .stat-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+  }
+
+  .stat-value {
+    font-family: 'Syne', sans-serif;
+    font-size: 36px;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .stat-sub {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  .charts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .chart-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+  }
+
+  .chart-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .bar-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  .bar-label {
+    font-size: 13px;
+    width: 80px;
+    flex-shrink: 0;
+  }
+
+  .bar-track {
+    flex: 1;
+    height: 8px;
+    background: var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .bar-count {
+    font-size: 13px;
+    font-weight: 600;
+    width: 28px;
+    text-align: right;
+  }
+
+  .donut-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .donut-svg { flex-shrink: 0; }
+
+  .donut-legend { flex: 1; }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+    font-size: 13px;
+  }
+
+  .legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .legend-pct {
+    margin-left: auto;
+    font-weight: 600;
+    font-size: 13px;
+  }
+
+  /* UPCOMING */
+  .upcoming-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+  }
+
+  .upcoming-list { display: flex; flex-direction: column; gap: 10px; }
+
+  .upcoming-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: var(--surface2);
+    border-radius: 8px;
+  }
+
+  .upcoming-date {
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-muted);
+    width: 44px;
+    flex-shrink: 0;
+  }
+
+  .upcoming-title {
+    flex: 1;
+    font-size: 13px;
+  }
+
+  /* TAGS */
+  .tag {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+
+  .tag-reels { background: rgba(255,149,0,0.15); color: var(--reels); }
+  .tag-post { background: rgba(168,85,247,0.15); color: var(--post); }
+  .tag-email { background: rgba(74,158,255,0.15); color: var(--email); }
+  .tag-linkedin { background: rgba(74,158,255,0.15); color: var(--linkedin); }
+  .tag-youtube { background: rgba(255,68,68,0.15); color: var(--youtube); }
+
+  .status-badge {
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  .status-finalizado { background: rgba(34,197,94,0.15); color: var(--finalizado); }
+  .status-em-processo { background: rgba(245,158,11,0.15); color: var(--em-processo); }
+  .status-nao-iniciado { background: rgba(107,107,136,0.15); color: var(--text-muted); }
+
+  /* CALENDAR PAGE */
+  .cal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+  }
+
+  .cal-header h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 24px;
+    font-weight: 800;
+  }
+
+  .cal-nav {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .cal-month {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    min-width: 140px;
+    text-align: center;
+  }
+
+  .cal-nav-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    transition: all 0.2s;
+  }
+
+  .cal-nav-btn:hover { border-color: var(--text-muted); }
+
+  .cal-filters {
+    display: flex;
+    gap: 8px;
+  }
+
+  .filter-btn {
+    padding: 5px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+
+  .filter-btn.active, .filter-btn:hover {
+    border-color: currentColor;
+  }
+
+  .filter-btn.f-reels.active { color: var(--reels); border-color: var(--reels); background: rgba(255,149,0,0.08); }
+  .filter-btn.f-post.active { color: var(--post); border-color: var(--post); background: rgba(168,85,247,0.08); }
+  .filter-btn.f-email.active { color: var(--email); border-color: var(--email); background: rgba(74,158,255,0.08); }
+  .filter-btn.f-linkedin.active { color: var(--linkedin); border-color: var(--linkedin); background: rgba(74,158,255,0.08); }
+  .filter-btn.f-youtube.active { color: var(--youtube); border-color: var(--youtube); background: rgba(255,68,68,0.08); }
+
+  /* CALENDAR GRID */
+  .cal-grid {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .cal-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .cal-weekday {
+    padding: 12px;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+  }
+
+  .cal-weeks { }
+
+  .cal-week {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    border-bottom: 1px solid var(--border);
+    min-height: 120px;
+  }
+
+  .cal-week:last-child { border-bottom: none; }
+
+  .cal-day {
+    border-right: 1px solid var(--border);
+    padding: 10px 8px;
+    min-height: 120px;
+    cursor: pointer;
+    transition: background 0.15s;
+    position: relative;
+  }
+
+  .cal-day:last-child { border-right: none; }
+
+  .cal-day:hover { background: rgba(255,255,255,0.03); }
+
+  .cal-day.past {
+    background: var(--past);
+    opacity: 0.7;
+  }
+
+  .cal-day.today {
+    background: rgba(74,158,255,0.05);
+  }
+
+  .cal-day.other-month {
+    opacity: 0.3;
+  }
+
+  .day-number {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .today-dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--email);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    margin-left: auto;
+  }
+
+  .day-items { display: flex; flex-direction: column; gap: 3px; }
+
+  .day-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 6px;
+    border-radius: 5px;
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    position: relative;
+  }
+
+  .day-item:hover { filter: brightness(1.2); }
+
+  .day-item.finalizado {
+    text-decoration: line-through;
+    opacity: 0.6;
+  }
+
+  .day-item.tipo-reels { background: rgba(255,149,0,0.12); color: var(--reels); }
+  .day-item.tipo-post { background: rgba(168,85,247,0.12); color: var(--post); }
+  .day-item.tipo-email { background: rgba(74,158,255,0.12); color: var(--email); }
+  .day-item.tipo-linkedin { background: rgba(74,158,255,0.12); color: #60b4ff; }
+  .day-item.tipo-youtube { background: rgba(255,68,68,0.12); color: var(--youtube); }
+
+  .day-item-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+    flex-shrink: 0;
+  }
+
+  .day-item-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100px; }
+
+  /* MODAL */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(4px);
+    z-index: 200;
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    width: 500px;
+    max-width: 95vw;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+
+  .modal-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  .modal-close {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal-close:hover { color: var(--text); }
+
+  .form-group {
+    margin-bottom: 16px;
+  }
+
+  .form-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+  }
+
+  .form-input, .form-select, .form-textarea {
+    width: 100%;
+    padding: 10px 12px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .form-input:focus, .form-select:focus, .form-textarea:focus {
+    border-color: var(--email);
+  }
+
+  .form-select option { background: var(--surface2); }
+
+  .form-textarea { min-height: 80px; resize: vertical; }
+
+  .modal-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    margin-top: 20px;
+  }
+
+  .btn-danger {
+    background: rgba(255,68,68,0.15);
+    color: var(--youtube);
+    border: none;
+  }
+
+  .btn-danger:hover { background: rgba(255,68,68,0.25); }
+
+  /* IMPORT AREA */
+  .import-area {
+    border: 2px dashed var(--border);
+    border-radius: 12px;
+    padding: 40px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 20px;
+  }
+
+  .import-area:hover {
+    border-color: var(--email);
+    background: rgba(74,158,255,0.05);
+  }
+
+  .import-icon { font-size: 40px; margin-bottom: 12px; }
+  .import-text { font-size: 15px; font-weight: 500; margin-bottom: 4px; }
+  .import-sub { font-size: 13px; color: var(--text-muted); }
+
+  /* DETAIL MODAL - content items */
+  .detail-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px;
+    background: var(--surface2);
+    border-radius: 10px;
+    margin-bottom: 10px;
+  }
+
+  .detail-item-info { flex: 1; }
+  .detail-item-title { font-size: 14px; margin-bottom: 6px; }
+  .detail-item-meta { display: flex; gap: 8px; align-items: center; }
+
+  .status-select-inline {
+    background: transparent;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    outline: none;
+    padding: 3px 8px;
+    border-radius: 20px;
+  }
+
+  .status-select-inline.finalizado { color: var(--finalizado); background: rgba(34,197,94,0.15); }
+  .status-select-inline.em-processo { color: var(--em-processo); background: rgba(245,158,11,0.15); }
+  .status-select-inline.nao-iniciado { color: var(--text-muted); background: rgba(107,107,136,0.15); }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-muted);
+  }
+
+  .empty-state-icon { font-size: 48px; margin-bottom: 16px; }
+  .empty-state-title { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; margin-bottom: 8px; color: var(--text); }
+  .empty-state-text { font-size: 14px; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Plano de Marketing</div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showPage('dashboard')">Dashboard</button>
+    <button class="nav-tab" onclick="showPage('calendario')">Calendário</button>
+  </div>
+  <div class="nav-actions">
+    <button class="btn btn-ghost" onclick="openImport()">⬆ Importar CSV</button>
+    <button class="btn btn-primary" onclick="openAddModal()">+ Novo conteúdo</button>
+  </div>
+</nav>
+
+<!-- DASHBOARD PAGE -->
+<div id="page-dashboard" class="page active">
+  <div class="dash-header">
+    <h1>Visão Geral</h1>
+    <p id="dash-subtitle">Carregue seus dados para começar</p>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card blue">
+      <div class="stat-label">Total de Conteúdos</div>
+      <div class="stat-value" id="stat-total">0</div>
+      <div class="stat-sub">itens planejados</div>
+    </div>
+    <div class="stat-card green">
+      <div class="stat-label">Finalizados</div>
+      <div class="stat-value" id="stat-finalizados">0</div>
+      <div class="stat-sub" id="stat-finalizados-pct">0% do total</div>
+    </div>
+    <div class="stat-card orange">
+      <div class="stat-label">Em Processo</div>
+      <div class="stat-value" id="stat-em-processo">0</div>
+      <div class="stat-sub">em andamento</div>
+    </div>
+    <div class="stat-card purple">
+      <div class="stat-label">Não Iniciados</div>
+      <div class="stat-value" id="stat-nao-iniciados">0</div>
+      <div class="stat-sub">aguardando</div>
+    </div>
+  </div>
+
+  <div class="charts-grid">
+    <div class="chart-card">
+      <div class="chart-title">Por Canal</div>
+      <div id="chart-canais"></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Status</div>
+      <div class="donut-wrapper">
+        <svg class="donut-svg" width="100" height="100" viewBox="0 0 100 100" id="donut-svg">
+          <circle cx="50" cy="50" r="38" fill="none" stroke="#2a2a38" stroke-width="12"/>
+        </svg>
+        <div class="donut-legend" id="donut-legend"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="upcoming-card">
+    <div class="chart-title" style="margin-bottom:16px">Próximos Conteúdos</div>
+    <div class="upcoming-list" id="upcoming-list">
+      <div class="empty-state">
+        <div class="empty-state-icon">📅</div>
+        <div class="empty-state-title">Nenhum dado ainda</div>
+        <div class="empty-state-text">Importe um CSV ou adicione conteúdos manualmente</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CALENDAR PAGE -->
+<div id="page-calendario" class="page">
+  <div class="cal-header">
+    <h1>Calendário Editorial</h1>
+    <div class="cal-nav">
+      <button class="cal-nav-btn" onclick="prevMonth()">‹</button>
+      <div class="cal-month" id="cal-month-label"></div>
+      <button class="cal-nav-btn" onclick="nextMonth()">›</button>
+    </div>
+    <div class="cal-filters">
+      <button class="filter-btn f-reels" onclick="toggleFilter('Reels')">Reels</button>
+      <button class="filter-btn f-post" onclick="toggleFilter('Post')">Post</button>
+      <button class="filter-btn f-email" onclick="toggleFilter('Email')">E-mail</button>
+      <button class="filter-btn f-linkedin" onclick="toggleFilter('LinkedIn')">LinkedIn</button>
+      <button class="filter-btn f-youtube" onclick="toggleFilter('YouTube')">YouTube</button>
+    </div>
+  </div>
+
+  <div class="cal-grid">
+    <div class="cal-weekdays">
+      <div class="cal-weekday">Dom</div>
+      <div class="cal-weekday">Seg</div>
+      <div class="cal-weekday">Ter</div>
+      <div class="cal-weekday">Qua</div>
+      <div class="cal-weekday">Qui</div>
+      <div class="cal-weekday">Sex</div>
+      <div class="cal-weekday">Sáb</div>
+    </div>
+    <div class="cal-weeks" id="cal-weeks"></div>
+  </div>
+</div>
+
+<!-- IMPORT MODAL -->
+<div class="modal-overlay" id="modal-import">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Importar CSV</div>
+      <button class="modal-close" onclick="closeModal('modal-import')">✕</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Canal</label>
+      <select class="form-select" id="import-canal">
+        <option value="Instagram">Instagram (Reels/Post)</option>
+        <option value="Email">E-mail</option>
+        <option value="LinkedIn">LinkedIn</option>
+        <option value="YouTube">YouTube</option>
+      </select>
+    </div>
+    <div class="import-area" onclick="document.getElementById('csv-file').click()">
+      <div class="import-icon">📂</div>
+      <div class="import-text">Clique para selecionar o arquivo CSV</div>
+      <div class="import-sub">Formato: Data da postagem, Tipo, Conteúdo, Status</div>
+      <input type="file" id="csv-file" accept=".csv" style="display:none" onchange="handleCSV(event)">
+    </div>
+    <div id="import-preview" style="font-size:13px;color:var(--text-muted);"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-import')">Cancelar</button>
+      <button class="btn btn-primary" onclick="confirmImport()">Importar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD/EDIT MODAL -->
+<div class="modal-overlay" id="modal-add">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-add-title">Novo Conteúdo</div>
+      <button class="modal-close" onclick="closeModal('modal-add')">✕</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Data</label>
+      <input type="date" class="form-input" id="add-data">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Canal / Tipo</label>
+      <select class="form-select" id="add-tipo">
+        <option value="Reels">Reels (Instagram)</option>
+        <option value="Post">Post (Instagram)</option>
+        <option value="Email">E-mail</option>
+        <option value="LinkedIn">LinkedIn</option>
+        <option value="YouTube">YouTube</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Título / Conteúdo</label>
+      <textarea class="form-textarea" id="add-conteudo" placeholder="Descreva o conteúdo..."></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Status</label>
+      <select class="form-select" id="add-status">
+        <option value="Não iniciado">Não iniciado</option>
+        <option value="Em processo">Em processo</option>
+        <option value="Finalizado">Finalizado</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-danger" id="btn-delete" onclick="deleteItem()" style="display:none">Excluir</button>
+      <button class="btn btn-ghost" onclick="closeModal('modal-add')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveItem()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- DAY DETAIL MODAL -->
+<div class="modal-overlay" id="modal-day">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-day-title"></div>
+      <button class="modal-close" onclick="closeModal('modal-day')">✕</button>
+    </div>
+    <div id="modal-day-content"></div>
+    <div class="modal-actions">
+      <button class="btn btn-primary" onclick="addToDay()">+ Adicionar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// =====================
+// DATA
+// =====================
+let data = JSON.parse(localStorage.getItem('marketing-data') || '[]');
+let importBuffer = [];
+let editingId = null;
+let currentDayDate = null;
+let currentYear = new Date().getFullYear();
+let currentMonth = new Date().getMonth();
+let activeFilters = [];
+
+const TIPO_CLASSES = {
+  'Reels': 'tipo-reels',
+  'Post': 'tipo-post',
+  'Email': 'tipo-email',
+  'E-mail': 'tipo-email',
+  'LinkedIn': 'tipo-linkedin',
+  'YouTube': 'tipo-youtube',
+  'Youtube': 'tipo-youtube',
+};
+
+const TIPO_LABELS = {
+  'Reels': 'Reels',
+  'Post': 'Post',
+  'Email': 'E-mail',
+  'E-mail': 'E-mail',
+  'LinkedIn': 'LinkedIn',
+  'YouTube': 'YouTube',
+  'Youtube': 'YouTube',
+};
+
+function saveData() {
+  localStorage.setItem('marketing-data', JSON.stringify(data));
+}
+
+function parseDate(str) {
+  if (!str) return null;
+  // dd/mm/yyyy
+  if (str.includes('/')) {
+    const [d, m, y] = str.split('/');
+    return new Date(+y, +m - 1, +d);
+  }
+  // yyyy-mm-dd
+  if (str.includes('-')) {
+    const [y, m, d] = str.split('-');
+    return new Date(+y, +m - 1, +d);
+  }
+  return null;
+}
+
+function formatDateKey(date) {
+  return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
+}
+
+function formatDateDisplay(dateKey) {
+  const [y, m, d] = dateKey.split('-');
+  return `${d}/${m}`;
+}
+
+// =====================
+// NAVIGATION
+// =====================
+function showPage(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  event.target.classList.add('active');
+  if (page === 'dashboard') renderDashboard();
+  if (page === 'calendario') renderCalendar();
+}
+
+// =====================
+// IMPORT
+// =====================
+function openImport() {
+  document.getElementById('modal-import').classList.add('open');
+  document.getElementById('import-preview').textContent = '';
+  importBuffer = [];
+}
+
+let csvRawData = null;
+
+function handleCSV(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    csvRawData = e.target.result;
+    const lines = csvRawData.split('\n').filter(l => l.trim());
+    const validLines = lines.slice(1).filter(l => {
+      const cols = l.split(',');
+      return cols[0] && cols[0].trim() && parseDate(cols[0].trim());
+    });
+    document.getElementById('import-preview').textContent = `✓ ${validLines.length} registros encontrados no arquivo.`;
+  };
+  reader.readAsText(file, 'UTF-8');
+}
+
+function confirmImport() {
+  if (!csvRawData) { alert('Selecione um arquivo CSV primeiro.'); return; }
+  const canal = document.getElementById('import-canal').value;
+  const lines = csvRawData.split('\n').filter(l => l.trim());
+
+  lines.slice(1).forEach(line => {
+    const cols = line.split(',');
+    const dateStr = cols[0]?.trim();
+    const tipo = cols[1]?.trim();
+    const conteudo = cols[2]?.trim();
+    const status = cols[3]?.trim() || 'Não iniciado';
+
+    if (!dateStr) return;
+    const d = parseDate(dateStr);
+    if (!d) return;
+
+    const finalTipo = tipo || canal;
+    if (!conteudo && !tipo) return;
+
+    data.push({
+      id: Date.now() + Math.random(),
+      dateKey: formatDateKey(d),
+      tipo: finalTipo,
+      conteudo: conteudo || '',
+      status: status,
+    });
+  });
+
+  saveData();
+  closeModal('modal-import');
+  csvRawData = null;
+  document.getElementById('csv-file').value = '';
+  renderDashboard();
+  renderCalendar();
+  alert('Importado com sucesso!');
+}
+
+// =====================
+// ADD / EDIT
+// =====================
+function openAddModal(dateKey = null, id = null) {
+  editingId = id;
+  const modal = document.getElementById('modal-add');
+  const today = new Date();
+  const defaultDate = dateKey || formatDateKey(today);
+
+  if (id) {
+    const item = data.find(d => d.id === id);
+    document.getElementById('modal-add-title').textContent = 'Editar Conteúdo';
+    document.getElementById('add-data').value = item.dateKey;
+    document.getElementById('add-tipo').value = item.tipo;
+    document.getElementById('add-conteudo').value = item.conteudo;
+    document.getElementById('add-status').value = item.status;
+    document.getElementById('btn-delete').style.display = 'block';
+  } else {
+    document.getElementById('modal-add-title').textContent = 'Novo Conteúdo';
+    document.getElementById('add-data').value = defaultDate;
+    document.getElementById('add-tipo').value = 'Reels';
+    document.getElementById('add-conteudo').value = '';
+    document.getElementById('add-status').value = 'Não iniciado';
+    document.getElementById('btn-delete').style.display = 'none';
+  }
+
+  modal.classList.add('open');
+}
+
+function saveItem() {
+  const dateKey = document.getElementById('add-data').value;
+  const tipo = document.getElementById('add-tipo').value;
+  const conteudo = document.getElementById('add-conteudo').value;
+  const status = document.getElementById('add-status').value;
+
+  if (!dateKey) { alert('Selecione uma data.'); return; }
+
+  if (editingId) {
+    const idx = data.findIndex(d => d.id === editingId);
+    if (idx !== -1) data[idx] = { ...data[idx], dateKey, tipo, conteudo, status };
+  } else {
+    data.push({ id: Date.now() + Math.random(), dateKey, tipo, conteudo, status });
+  }
+
+  saveData();
+  closeModal('modal-add');
+  renderDashboard();
+  renderCalendar();
+}
+
+function deleteItem() {
+  if (!editingId) return;
+  if (!confirm('Excluir este item?')) return;
+  data = data.filter(d => d.id !== editingId);
+  saveData();
+  closeModal('modal-add');
+  renderDashboard();
+  renderCalendar();
+}
+
+function addToDay() {
+  closeModal('modal-day');
+  openAddModal(currentDayDate);
+}
+
+// =====================
+// MODALS
+// =====================
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+
+document.querySelectorAll('.modal-overlay').forEach(o => {
+  o.addEventListener('click', (e) => {
+    if (e.target === o) o.classList.remove('open');
+  });
+});
+
+// =====================
+// DASHBOARD
+// =====================
+function renderDashboard() {
+  const validData = data.filter(d => d.conteudo || d.tipo);
+  const total = validData.length;
+  const finalizado = validData.filter(d => d.status === 'Finalizado').length;
+  const emProcesso = validData.filter(d => d.status === 'Em processo').length;
+  const naoIniciado = validData.filter(d => d.status === 'Não iniciado').length;
+
+  document.getElementById('stat-total').textContent = total;
+  document.getElementById('stat-finalizados').textContent = finalizado;
+  document.getElementById('stat-finalizados-pct').textContent = total ? Math.round(finalizado/total*100) + '% do total' : '0% do total';
+  document.getElementById('stat-em-processo').textContent = emProcesso;
+  document.getElementById('stat-nao-iniciados').textContent = naoIniciado;
+
+  if (total > 0) {
+    const now = new Date();
+    document.getElementById('dash-subtitle').textContent =
+      `${total} conteúdos planejados · Atualizado agora`;
+  }
+
+  // Canais chart
+  const canais = {};
+  validData.forEach(d => {
+    const label = TIPO_LABELS[d.tipo] || d.tipo;
+    canais[label] = (canais[label] || 0) + 1;
+  });
+  const maxCanal = Math.max(...Object.values(canais), 1);
+  const canalColors = {
+    'Reels': 'var(--reels)',
+    'Post': 'var(--post)',
+    'E-mail': 'var(--email)',
+    'LinkedIn': 'var(--linkedin)',
+    'YouTube': 'var(--youtube)',
+  };
+
+  const chartCanais = document.getElementById('chart-canais');
+  chartCanais.innerHTML = Object.entries(canais).sort((a,b) => b[1]-a[1]).map(([label, count]) => `
+    <div class="bar-row">
+      <div class="bar-label">${label}</div>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:${count/maxCanal*100}%;background:${canalColors[label]||'var(--email)'}"></div>
+      </div>
+      <div class="bar-count">${count}</div>
+    </div>
+  `).join('') || '<div style="color:var(--text-muted);font-size:13px">Sem dados</div>';
+
+  // Donut
+  renderDonut(finalizado, emProcesso, naoIniciado, total);
+
+  // Upcoming
+  const today = formatDateKey(new Date());
+  const upcoming = data
+    .filter(d => d.dateKey >= today && d.conteudo && d.status !== 'Finalizado')
+    .sort((a,b) => a.dateKey.localeCompare(b.dateKey))
+    .slice(0, 6);
+
+  const upcomingList = document.getElementById('upcoming-list');
+  if (upcoming.length === 0) {
+    upcomingList.innerHTML = '<div style="color:var(--text-muted);font-size:13px;text-align:center;padding:20px">Nenhum conteúdo próximo</div>';
+  } else {
+    upcomingList.innerHTML = upcoming.map(item => `
+      <div class="upcoming-item">
+        <div class="upcoming-date">${formatDateDisplay(item.dateKey)}</div>
+        <span class="tag tag-${(TIPO_LABELS[item.tipo]||item.tipo).toLowerCase().replace('-','').replace(' ','')}">${TIPO_LABELS[item.tipo]||item.tipo}</span>
+        <div class="upcoming-title">${item.conteudo || '—'}</div>
+        <span class="status-badge status-${item.status.toLowerCase().replace(' ','-').replace('ã','a').replace('ç','c')}">${item.status}</span>
+      </div>
+    `).join('');
+  }
+}
+
+function renderDonut(fin, em, nao, total) {
+  const svg = document.getElementById('donut-svg');
+  const legend = document.getElementById('donut-legend');
+
+  if (total === 0) {
+    svg.innerHTML = '<circle cx="50" cy="50" r="38" fill="none" stroke="#2a2a38" stroke-width="12"/>';
+    legend.innerHTML = '<div style="color:var(--text-muted);font-size:13px">Sem dados</div>';
+    return;
+  }
+
+  const r = 38;
+  const circ = 2 * Math.PI * r;
+  const segments = [
+    { val: fin, color: '#22c55e', label: 'Finalizado' },
+    { val: em, color: '#f59e0b', label: 'Em processo' },
+    { val: nao, color: '#3a3a50', label: 'Não iniciado' },
+  ];
+
+  let offset = 0;
+  let svgContent = '';
+  segments.forEach(seg => {
+    const pct = seg.val / total;
+    const dash = pct * circ;
+    svgContent += `<circle cx="50" cy="50" r="${r}" fill="none" stroke="${seg.color}" stroke-width="12"
+      stroke-dasharray="${dash} ${circ - dash}"
+      stroke-dashoffset="${-offset}"
+      transform="rotate(-90 50 50)"/>`;
+    offset += dash;
+  });
+
+  svg.innerHTML = svgContent;
+  legend.innerHTML = segments.map(seg => `
+    <div class="legend-item">
+      <div class="legend-dot" style="background:${seg.color}"></div>
+      <span>${seg.label}</span>
+      <span class="legend-pct">${total ? Math.round(seg.val/total*100) : 0}%</span>
+    </div>
+  `).join('');
+}
+
+// =====================
+// CALENDAR
+// =====================
+function toggleFilter(tipo) {
+  const idx = activeFilters.indexOf(tipo);
+  if (idx === -1) activeFilters.push(tipo);
+  else activeFilters.splice(idx, 1);
+
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    const t = btn.textContent.trim();
+    const map = {'Reels':'Reels','Post':'Post','E-mail':'Email','LinkedIn':'LinkedIn','YouTube':'YouTube'};
+    btn.classList.toggle('active', activeFilters.includes(map[t] || t));
+  });
+
+  renderCalendar();
+}
+
+function prevMonth() {
+  currentMonth--;
+  if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+  renderCalendar();
+}
+
+function nextMonth() {
+  currentMonth++;
+  if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+  renderCalendar();
+}
+
+const MONTHS = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+
+function renderCalendar() {
+  document.getElementById('cal-month-label').textContent = `${MONTHS[currentMonth]} ${currentYear}`;
+
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const todayKey = formatDateKey(today);
+
+  // Build data map
+  const dataMap = {};
+  data.forEach(item => {
+    if (!dataMap[item.dateKey]) dataMap[item.dateKey] = [];
+    dataMap[item.dateKey].push(item);
+  });
+
+  // Build calendar days
+  const firstDay = new Date(currentYear, currentMonth, 1);
+  const lastDay = new Date(currentYear, currentMonth + 1, 0);
+  const startDow = firstDay.getDay();
+
+  const days = [];
+  // Prev month padding
+  for (let i = startDow - 1; i >= 0; i--) {
+    const d = new Date(currentYear, currentMonth, -i);
+    days.push({ date: d, key: formatDateKey(d), otherMonth: true });
+  }
+  // Current month
+  for (let i = 1; i <= lastDay.getDate(); i++) {
+    const d = new Date(currentYear, currentMonth, i);
+    days.push({ date: d, key: formatDateKey(d), otherMonth: false });
+  }
+  // Next month padding
+  const remaining = 7 - (days.length % 7);
+  if (remaining < 7) {
+    for (let i = 1; i <= remaining; i++) {
+      const d = new Date(currentYear, currentMonth + 1, i);
+      days.push({ date: d, key: formatDateKey(d), otherMonth: true });
+    }
+  }
+
+  // Render weeks
+  const weeks = [];
+  for (let i = 0; i < days.length; i += 7) {
+    weeks.push(days.slice(i, i + 7));
+  }
+
+  const weeksEl = document.getElementById('cal-weeks');
+  weeksEl.innerHTML = weeks.map(week => `
+    <div class="cal-week">
+      ${week.map(day => {
+        const isPast = day.date < today;
+        const isToday = day.key === todayKey;
+        const items = (dataMap[day.key] || []).filter(item => {
+          if (activeFilters.length === 0) return true;
+          const t = TIPO_LABELS[item.tipo] || item.tipo;
+          const filterMap = {'Reels':'Reels','Post':'Post','Email':'E-mail','LinkedIn':'LinkedIn','YouTube':'YouTube'};
+          return activeFilters.some(f => filterMap[f] === t || f === t);
+        }).filter(item => item.conteudo || item.tipo);
+
+        return `<div class="cal-day ${isPast ? 'past' : ''} ${isToday ? 'today' : ''} ${day.otherMonth ? 'other-month' : ''}"
+          onclick="openDayModal('${day.key}')">
+          <div class="day-number">
+            ${day.date.getDate()}
+            ${isToday ? `<div class="today-dot">${day.date.getDate()}</div>` : ''}
+          </div>
+          <div class="day-items">
+            ${items.slice(0, 4).map(item => {
+              const tipoClass = TIPO_CLASSES[item.tipo] || 'tipo-email';
+              const label = TIPO_LABELS[item.tipo] || item.tipo;
+              return `<div class="day-item ${tipoClass} ${item.status === 'Finalizado' ? 'finalizado' : ''}"
+                onclick="event.stopPropagation();openAddModal('${item.dateKey}', ${item.id})">
+                <div class="day-item-dot"></div>
+                <div class="day-item-label">${label}</div>
+              </div>`;
+            }).join('')}
+            ${items.length > 4 ? `<div style="font-size:10px;color:var(--text-muted);padding:2px 6px">+${items.length-4} mais</div>` : ''}
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+  `).join('');
+}
+
+function openDayModal(dateKey) {
+  currentDayDate = dateKey;
+  const [y, m, d] = dateKey.split('-');
+  document.getElementById('modal-day-title').textContent = `${d}/${m}/${y}`;
+
+  const items = data.filter(item => item.dateKey === dateKey && (item.conteudo || item.tipo));
+  const content = document.getElementById('modal-day-content');
+
+  if (items.length === 0) {
+    content.innerHTML = '<div style="color:var(--text-muted);font-size:13px;text-align:center;padding:20px">Nenhum conteúdo neste dia</div>';
+  } else {
+    content.innerHTML = items.map(item => {
+      const tipoClass = TIPO_CLASSES[item.tipo] || 'tipo-email';
+      const label = TIPO_LABELS[item.tipo] || item.tipo;
+      return `
+        <div class="detail-item">
+          <div class="detail-item-info">
+            <div class="detail-item-title ${item.status === 'Finalizado' ? 'finalizado' : ''}"
+              style="${item.status === 'Finalizado' ? 'text-decoration:line-through;opacity:0.6' : ''}">
+              ${item.conteudo || '—'}
+            </div>
+            <div class="detail-item-meta">
+              <span class="tag tag-${tipoClass.replace('tipo-','')}">${label}</span>
+              <select class="status-select-inline ${item.status.toLowerCase().replace(' ','-').replace('ã','a').replace('ç','c')}"
+                onchange="updateStatus(${item.id}, this.value, this)">
+                <option value="Não iniciado" ${item.status==='Não iniciado'?'selected':''}>Não iniciado</option>
+                <option value="Em processo" ${item.status==='Em processo'?'selected':''}>Em processo</option>
+                <option value="Finalizado" ${item.status==='Finalizado'?'selected':''}>Finalizado</option>
+              </select>
+            </div>
+          </div>
+          <button class="btn btn-ghost" style="padding:4px 10px;font-size:12px" onclick="closeModal('modal-day');openAddModal('${item.dateKey}', ${item.id})">✏️</button>
+        </div>
+      `;
+    }).join('');
+  }
+
+  document.getElementById('modal-day').classList.add('open');
+}
+
+function updateStatus(id, newStatus, selectEl) {
+  const idx = data.findIndex(d => d.id === id);
+  if (idx !== -1) {
+    data[idx].status = newStatus;
+    saveData();
+    // Update class
+    selectEl.className = `status-select-inline ${newStatus.toLowerCase().replace(' ','-').replace('ã','a').replace('ç','c')}`;
+    // Update title strikethrough
+    const titleEl = selectEl.closest('.detail-item').querySelector('.detail-item-title');
+    if (newStatus === 'Finalizado') {
+      titleEl.style.textDecoration = 'line-through';
+      titleEl.style.opacity = '0.6';
+    } else {
+      titleEl.style.textDecoration = '';
+      titleEl.style.opacity = '';
+    }
+    renderCalendar();
+    renderDashboard();
+  }
+}
+
+// =====================
+// INIT
+// =====================
+renderDashboard();
+renderCalendar();
+</script>
+</body>
+</html>
