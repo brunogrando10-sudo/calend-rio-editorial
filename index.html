@@ -2644,9 +2644,6 @@ function dismissReplicate() {
   lastChangedItem = null;
 }
 
-// =====================
-// SUPABASE CONFIG
-// =====================
 const SUPABASE_URL = 'https://cknbntwgajzpocfdqsku.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_YR7K7xUDGLZ4EWdFNzDK3g_AoHuXdJs';
 
@@ -2659,23 +2656,30 @@ async function loadFromSupabase() {
       }
     });
     const rows = await res.json();
-    if (rows && rows[0] && rows[0].data) {
-      data = Array.isArray(rows[0].data) ? rows[0].data : [];
+    if (rows && rows[0] && rows[0].data && Array.isArray(rows[0].data) && rows[0].data.length > 0) {
+      data = rows[0].data;
+    } else {
+      // Supabase vazio — tenta carregar do localStorage
+      const local = localStorage.getItem('marvee-marketing');
+      if (local) data = JSON.parse(local);
     }
   } catch(e) {
     console.warn('Supabase offline, usando localStorage:', e);
-    data = JSON.parse(localStorage.getItem('marvee-marketing') || '[]');
+    const local = localStorage.getItem('marvee-marketing');
+    if (local) data = JSON.parse(local);
   }
   renderDashboard();
   renderCalendar();
 }
 
-async function save() {
-  // Salva no localStorage como backup imediato
+let saveTimer = null;
+function save() {
+  // Salva localmente de forma imediata
   localStorage.setItem('marvee-marketing', JSON.stringify(data));
-  // Salva no Supabase
-  try {
-    await fetch(`${SUPABASE_URL}/rest/v1/marketing_data?id=eq.main`, {
+  // Envia para o Supabase com debounce de 800ms (evita múltiplas chamadas seguidas)
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    fetch(`${SUPABASE_URL}/rest/v1/marketing_data?id=eq.main`, {
       method: 'PATCH',
       headers: {
         'apikey': SUPABASE_KEY,
@@ -2684,10 +2688,11 @@ async function save() {
         'Prefer': 'return=minimal'
       },
       body: JSON.stringify({ data: data, updated_at: new Date().toISOString() })
-    });
-  } catch(e) {
-    console.warn('Erro ao salvar no Supabase:', e);
-  }
+    }).then(r => {
+      if (r.ok) console.log('✓ Salvo no Supabase');
+      else r.text().then(t => console.warn('Erro Supabase:', t));
+    }).catch(e => console.warn('Erro ao salvar:', e));
+  }, 800);
 }
 
 // =====================
