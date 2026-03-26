@@ -1787,7 +1787,7 @@
 // =====================
 // STATE
 // =====================
-let data = JSON.parse(localStorage.getItem('marvee-marketing') || '[]');
+let data = JSON.parse(localStorage.getItem('marvee-marketing') || '[]'); // fallback inicial
 let csvRaw = null;
 let editingId = null;
 let currentDayDate = null;
@@ -1807,8 +1807,6 @@ const CANAL_COLORS = {
   'Reels':'var(--reels)','Post':'var(--post)','E-mail':'var(--email)',
   'LinkedIn':'var(--linkedin)','YouTube':'var(--youtube)'
 };
-
-function save() { localStorage.setItem('marvee-marketing', JSON.stringify(data)); }
 
 function parseDate(s) {
   if (!s) return null;
@@ -2647,9 +2645,54 @@ function dismissReplicate() {
 }
 
 // =====================
+// SUPABASE CONFIG
+// =====================
+const SUPABASE_URL = 'https://cknbntwgajzpocfdqsku.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_YR7K7xUDGLZ4EWdFNzDK3g_AoHuXdJs';
+
+async function loadFromSupabase() {
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/marketing_data?id=eq.main&select=data`, {
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`
+      }
+    });
+    const rows = await res.json();
+    if (rows && rows[0] && rows[0].data) {
+      data = Array.isArray(rows[0].data) ? rows[0].data : [];
+    }
+  } catch(e) {
+    console.warn('Supabase offline, usando localStorage:', e);
+    data = JSON.parse(localStorage.getItem('marvee-marketing') || '[]');
+  }
+  renderDashboard();
+  renderCalendar();
+}
+
+async function save() {
+  // Salva no localStorage como backup imediato
+  localStorage.setItem('marvee-marketing', JSON.stringify(data));
+  // Salva no Supabase
+  try {
+    await fetch(`${SUPABASE_URL}/rest/v1/marketing_data?id=eq.main`, {
+      method: 'PATCH',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify({ data: data, updated_at: new Date().toISOString() })
+    });
+  } catch(e) {
+    console.warn('Erro ao salvar no Supabase:', e);
+  }
+}
+
+// =====================
 // INIT
-renderDashboard();
-renderCalendar();
+loadFromSupabase();
 </script>
 </body>
 </html>
